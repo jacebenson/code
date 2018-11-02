@@ -1,6 +1,7 @@
 <!doctype html>
 <!-- See http://www.firepad.io/docs/ for detailed embedding docs. -->
 <html>
+
 <head>
   <meta charset="utf-8" />
   <!-- Firebase -->
@@ -15,44 +16,83 @@
   <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
   <script src="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.min.js"></script>
 
+  <!-- CodeMirror -->
+  <!--
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.css" />
+  -->
+  <!-- Firepad -->
+<!--
+  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
+  <script src="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.min.js"></script>
+-->
+  <!-- Include example userlist script / CSS.
+       Can be downloaded from: https://github.com/firebase/firepad/tree/master/examples/ -->
+  <script src="firepad-userlist.js"></script>
+  <link rel="stylesheet" href="firepad-userlist.css" />
+
   <style>
     html { height: 100%; }
-    body { margin: 0; height: 100%; position: relative; }
+    body { margin: 0; height: 100%; }
     /* Height / width / positioning can be customized for your use case.
-       For demo purposes, we make firepad fill the entire browser. */
-    #firepad-container {
-      width: 100%;
-      height: 100%;
+       For demo purposes, we make the user list 175px and firepad fill the rest of the page. */
+    #userlist {
+      position: absolute; left: 0; top: 0; bottom: 0; height: auto;
+      width: 175px;
+    }
+    #firepad {
+      position: absolute; left: 175px; top: 0; bottom: 0; right: 0; height: auto;
     }
   </style>
 </head>
 
 <body onload="init()">
-  <div id="firepad-container"></div>
+  <div id="userlist"></div>
+  <div id="firepad"></div>
 
   <script>
     function init() {
       //// Initialize Firebase.
       //// TODO: replace with your Firebase project configuration.
       var config = {
-        apiKey: "AIzaSyC_JdByNm-E1CAJUkePsr-YJZl7W77oL3g",
-        authDomain: "firepad-tests.firebaseapp.com",
-        databaseURL: "https://firepad-tests.firebaseio.com"
-      };
+        apiKey: "AIzaSyAzkdZJNCMca5u0wBAxIejM8CA-umIJhzc",
+        authDomain: "code-jacebenson-com.firebaseapp.com",
+        databaseURL: "https://code-jacebenson-com.firebaseio.com"
+        };
       firebase.initializeApp(config);
 
       //// Get Firebase Database reference.
       var firepadRef = getExampleRef();
 
-      //// Create CodeMirror (with line numbers and the JavaScript mode).
-      var codeMirror = CodeMirror(document.getElementById('firepad-container'), {
+      var codeMirror = CodeMirror(document.getElementById('firepad'), {
         lineNumbers: true,
         mode: 'javascript'
       });
 
-      //// Create Firepad.
+      // Create a random ID to use as our user ID (we must give this to firepad and FirepadUserList).
+      var userId = Math.floor(Math.random() * 9999999999).toString();
+
+      //// Create Firepad (with rich text features and our desired userId).
+      // var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror,
+      //    { richTextToolbar: true, richTextShortcuts: true, userId: userId});
+      var defaultText = [];
+      defaultText.push('// JavaScript Editing with Firepad!');
+      defaultText.push('// Code snippets get wiped every so often.');
+      defaultText.push('// This uses the publicly available firepad db.');
+      defaultText = defaultText.join('\n');
       var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror, {
-        defaultText: '// JavaScript Editing with Firepad!\n// Code snippets get wiped every so often.\n// This uses the publicly available firepad db.'
+        defaultText: defaultText
+      });
+
+      //// Create FirepadUserList (with our desired userId).
+      var firepadUserList = FirepadUserList.fromDiv(firepadRef.child('users'),
+          document.getElementById('userlist'), userId);
+
+      //// Initialize contents.
+      firepad.on('ready', function() {
+        if (firepad.isHistoryEmpty()) {
+          // firepad.setText('Check out the user list to the left!');
+        }
       });
     }
 

@@ -1,0 +1,22 @@
+{
+  "name": "firepad",
+  "version": "1.0.0",
+  "description": "![Build Status](https://gitlab.com/pages/plain-html/badges/master/build.svg)",
+  "main": "test.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/jacebenson/firepad.git"
+  },
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/jacebenson/firepad/issues"
+  },
+  "homepage": "https://gitlab.com/jacebenson/firepad#readme"
+}
