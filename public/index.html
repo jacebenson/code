@@ -11,6 +11,23 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/mode/javascript/javascript.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.css" />
+  
+  
+<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/3024-day.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/3024-night.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/ambiance.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/base16-dark.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/base16-light.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/blackboard.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/cobalt.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/eclipse.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/elegant.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/erlang-dark.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/lesser-dark.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/midnight.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/monokai.css">
+<link rel="stylesheet" href="http://codemirror.net/theme/neat.css">
 
   <!-- Firepad -->
   <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
@@ -66,7 +83,8 @@
 
       var codeMirror = CodeMirror(document.getElementById('firepad'), {
         lineNumbers: true,
-        mode: 'javascript'
+        mode: 'javascript',
+        theme: 'monokai'
       });
 
       // Create a random ID to use as our user ID (we must give this to firepad and FirepadUserList).
