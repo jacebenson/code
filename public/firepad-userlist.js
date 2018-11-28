@@ -87,7 +87,7 @@ var FirepadUserList = (function() {
         self.displayName_ = name;
         stopEvent(e);
       } catch (error) {
-        console.log('nameInput Error, error);
+        console.log('nameInput Error', error);
       }
       });
   
