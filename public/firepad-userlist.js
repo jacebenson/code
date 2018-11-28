@@ -77,6 +77,8 @@ var FirepadUserList = (function() {
       // Update Firebase when name changes.
       var self = this;
       on(nameInput, 'change', function(e) {
+      try{
+        console.log('nameInput change');
         var name = nameInput.value || "Guest " + Math.floor(Math.random() * 1000);
         myUserRef.child('name').onDisconnect().remove();
         myUserRef.child('name').set(name);
@@ -84,6 +86,9 @@ var FirepadUserList = (function() {
         nameInput.blur();
         self.displayName_ = name;
         stopEvent(e);
+      } catch (error) {
+        console.log('nameInput Error, error);
+      }
       });
   
       var nameDiv = elt('div', [nameInput, nameHint]);
