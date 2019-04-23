@@ -45,8 +45,9 @@
 -->
   <!-- Include example userlist script / CSS.
        Can be downloaded from: https://github.com/firebase/firepad/tree/master/examples/ -->
-  <script src="firepad-userlist.js"></script>
-  <link rel="stylesheet" href="firepad-userlist.css" />
+  <script src="js/firepad-userlist.js"></script>
+  <script src="js/characters.js"></script>
+  <link rel="stylesheet" href="css/firepad-userlist.css" />
 
   <style>
     html { height: 100%; }
@@ -89,7 +90,8 @@
 
       // Create a random ID to use as our user ID (we must give this to firepad and FirepadUserList).
       var userId = Math.floor(Math.random() * 9999999999).toString();
-
+      var randomUser = characters.randomUser()
+      //var userId = characters.randomUser();
       //// Create Firepad (with rich text features and our desired userId).
       // var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror,
       //    { richTextToolbar: true, richTextShortcuts: true, userId: userId});
@@ -99,12 +101,13 @@
       defaultText.push('// This uses the publicly available firepad db.');
       defaultText = defaultText.join('\n');
       var firepad = Firepad.fromCodeMirror(firepadRef, codeMirror, {
-        defaultText: defaultText
+        defaultText: defaultText,
+        userId: userId
       });
 
       //// Create FirepadUserList (with our desired userId).
       var firepadUserList = FirepadUserList.fromDiv(firepadRef.child('users'),
-          document.getElementById('userlist'), userId);
+          document.getElementById('userlist'), userId, randomUser);
 
       //// Initialize contents.
       firepad.on('ready', function() {
