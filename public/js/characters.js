@@ -67,6 +67,7 @@ var characters = (function(){
         "Arrow",
         "Jane",
         "Poke",
+        //...
       ];
       returnObj.randomUser = function(){
         return returnObj.users[returnObj.random()];

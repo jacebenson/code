@@ -60,13 +60,17 @@ var FirepadUserList = (function() {
   FirepadUserList.prototype.makeUserEntryForSelf_ = function() {
     var myUserRef = this.ref_.child(this.userId_);
 
-    var colorDiv = elt('div', null, { 'class': 'firepad-userlist-color-indicator' });
+    var colorPicker = elt('input', null, {'class': 'firepad-userlist-color-indicator', 'type': 'color'})
+    //var colorDiv = elt('div', [colorPicker], { 'class': 'firepad-userlist-color-indicator' });
+    var colorDiv = elt('div', [colorPicker], {'class': 'firepad-userlist-color-indicator'});
     this.firebaseOn_(myUserRef.child('color'), 'value', function(colorSnapshot) {
       var color = colorSnapshot.val();
       if (isValidColor(color)) {
         colorDiv.style.backgroundColor = color;
+        colorPicker.value = color;
       }
     });
+    
 
     var nameInput = elt('input', null, { type: 'text', 'class': 'firepad-userlist-name-input'} );
     nameInput.value = this.displayName_;
@@ -84,9 +88,21 @@ var FirepadUserList = (function() {
       nameHint.style.display = 'none';
       nameInput.blur();
       self.displayName_ = name;
+      if(name.toLowerCase().indexOf('rhio')>=0){
+        colorPicker.value = '#593001'
+        myUserRef.child('color').set(colorPicker.value);
+      }
       stopEvent(e);
     });
-
+    on(colorPicker, 'change', function(e) {
+      //var name = nameInput.value || "Guest " + Math.floor(Math.random() * 1000);
+      var color = colorPicker.value// || "Guest " + Math.floor(Math.random() * 1000);
+      //myUserRef.child('name').onDisconnect().remove();
+      myUserRef.child('color').set(color);
+      colorPicker.blur();
+      self.displayName_ = color;
+      stopEvent(e);
+    });
     var nameDiv = elt('div', [nameInput, nameHint]);
 
     return elt('div', [ colorDiv, nameDiv ], {
