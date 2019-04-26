@@ -17,13 +17,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/javascript-lint.js"></script>
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/coffeescript-lint.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/css-lint.js"></script>
-  
-<script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
-<script src="https://unpkg.com/jsonlint@1.6.3/web/jsonlint.js"></script>
-<script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/lint.css">
-  
+  <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
+  <script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/lint.css">
+
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/apl/apl.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/asn.1/asn.1.js"></script>
@@ -209,70 +208,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/yeti.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/yonce.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/zenburn.css">
+  
 
   <!-- Firepad -->
   <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
   <script src="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.min.js"></script>
-
-  <!-- CodeMirror -->
-  <!--
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/codemirror.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/codemirror.css" />
-  -->
-  <!-- Firepad -->
-  <!--
-  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
-  <script src="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.min.js"></script>
--->
-  <!-- Include example userlist script / CSS.
-       Can be downloaded from: https://github.com/firebase/firepad/tree/master/examples/ -->
+  <!-- User List and random names-->
   <script src="js/firepad-userlist.js"></script>
   <script src="js/characters.js"></script>
   <link rel="stylesheet" href="css/firepad-userlist.css" />
-
-  <style>
-    html {
-      height: 100%;
-    }
-
-    body {
-      margin: 0;
-      height: 100%;
-    }
-
-    /* Height / width / positioning can be customized for your use case.
-       For demo purposes, we make the user list 175px and firepad fill the rest of the page. */
-    #userlist {
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      height: auto;
-      width: 175px;
-    }
-
-    #firepad {
-      position: absolute;
-      left: 175px;
-      top: 20px;
-      bottom: 0;
-      right: 0;
-      height: auto;
-    }
-
-    .firepad>a {
-      display: none;
-    }
-
-    #lang-and-theme {
-      position: absolute;
-      left: 175px;
-      top: 0px;
-      bottom: 0;
-      right: 0;
-      height: auto;
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body onload="init()">
@@ -465,7 +410,6 @@
 
     function init() {
       //// Initialize Firebase.
-      //// TODO: replace with your Firebase project configuration.
       var config = {
         apiKey: "AIzaSyAzkdZJNCMca5u0wBAxIejM8CA-umIJhzc",
         authDomain: "code-jacebenson-com.firebaseapp.com",
@@ -490,8 +434,7 @@
         var input = document.getElementById("theme");
         var theme = input.options[input.selectedIndex].value || 'monokai';
         window.codeMirror.setOption("theme", theme);
-        //location.hash = "#" + theme;
-        
+
         var url = new URL(window.location.href);
         url.searchParams.set('theme', theme);
         window.history.pushState('page2', 'Title', url.href);
@@ -500,8 +443,7 @@
         var input = document.getElementById("lang");
         var language = input.options[input.selectedIndex].value || 'javascript';
         window.codeMirror.setOption("mode", language);
-        //location.hash = "#" + theme;
-        
+
         var url = new URL(window.location.href);
         url.searchParams.set('language', language);
         window.history.pushState('page2', 'Title', url.href);
@@ -536,8 +478,10 @@
       if (hash !== null) {
         ref = ref.child(hash);
       } else {
-        ref = ref.push(); // generate unique location.
-        //window.location = window.location + '#' + ref.key; // add it as a hash to the URL.
+        //ref = ref.push(); // generate unique location.
+        var d = new Date();
+        d = d.toISOString().split('.')[0].replace(/\:/gi,'-');
+        ref = ref.child(d);
         url.searchParams.set('id', ref.key);
         window.history.pushState('page2', 'Title', url.href);
       }

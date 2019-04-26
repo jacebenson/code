@@ -1,24 +1,42 @@
+
+html {
+  height: 100%;
+}
+
 body {
-  font-family: sans-serif;
-  margin: auto;
-  max-width: 1280px;
+  margin: 0;
+  height: 100%;
 }
 
-.navbar {
-  background-color: #313236;
-  border-radius: 2px;
-  max-width: 800px;
+/* Height / width / positioning can be customized for your use case.
+   For demo purposes, we make the user list 175px and firepad fill the rest of the page. */
+#userlist {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  height: auto;
+  width: 175px;
 }
 
-.navbar a {
-  color: #aaa;
-  display: inline-block;
-  font-size: 15px;
-  padding: 10px;
-  text-decoration: none;
+#firepad {
+  position: absolute;
+  left: 175px;
+  top: 20px;
+  bottom: 0;
+  right: 0;
+  height: auto;
 }
 
-.navbar a:hover {
-  color: #ffffff;
+.firepad>a {
+  display: none;
 }
 
+#lang-and-theme {
+  position: absolute;
+  left: 175px;
+  top: 0px;
+  bottom: 0;
+  right: 0;
+  height: auto;
+}
