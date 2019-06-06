@@ -422,13 +422,15 @@
       var url = new URL(window.location.href);
       var theme = url.searchParams.get('theme');
       var language = url.searchParams.get('language');
+      var spacing = url.searchParams.get('spacing');
       window.codeMirror = CodeMirror(document.getElementById('firepad'), {
         lineNumbers: true,
         matchBrackets: true,
         styleActiveLine: true,
         mode: language || 'javascript',
         theme: theme || 'monokai',
-        lint: true
+        lint: true,
+        indentUnit: spacing || 2
       });
       window.selectTheme = function () {
         var input = document.getElementById("theme");
