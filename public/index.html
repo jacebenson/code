@@ -17,12 +17,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/javascript-lint.js"></script>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/coffeescript-lint.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/css-lint.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/foldcode.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/foldgutter.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/brace-fold.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/xml-fold.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/indent-fold.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/markdown-fold.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/comment-fold.js"></script>
+
 
 <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
 <script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/lint.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/foldgutter.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/apl/apl.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/asn.1/asn.1.js"></script>
@@ -448,6 +456,8 @@
       indentUnit: indentUnit || 2,
       tabSize: 4,
       //indentWithTabs: true
+      foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
     });
     window.selectTheme = function () {
       var input = document.getElementById("theme");
