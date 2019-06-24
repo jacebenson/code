@@ -1,22 +1,23 @@
 {
-  "name": "firepad",
+  "name": "code",
   "version": "1.0.0",
-  "description": "![Build Status](https://gitlab.com/pages/plain-html/badges/master/build.svg)",
+  "description": "Firepad Implentation",
   "main": "test.js",
   "scripts": {
-    "test": "node test.js"
+    "start": "light-server -s public/ -w 'public/**'"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/jacebenson/firepad.git"
+    "url": "git+ssh://git@github.com/jacebenson/code.git"
   },
-  "dependencies": {
-    "express": "^4.16.4"
-  },
+  "dependencies": {},
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/jacebenson/firepad/issues"
+    "url": "https://github.com/jacebenson/firepad/issues"
   },
-  "homepage": "https://gitlab.com/jacebenson/firepad#readme"
+  "homepage": "https://github.com/jacebenson/firepad#readme",
+  "devDependencies": {
+    "light-server": "^2.6.2"
+  }
 }
