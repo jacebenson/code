@@ -67,7 +67,17 @@ var characters = (function(){
         "Arrow",
         "Jane",
         "Poke",
-        //...
+        //Wayfarers
+        "Sissix",
+        "Kizzy",
+        "Jenks",
+        "Lovey",
+        "Rosemary Harper",
+        "Pepper",
+        "Blue",
+        "Jane",
+        "Cidra",
+
       ];
       returnObj.randomUser = function(){
         return returnObj.users[returnObj.random()];
