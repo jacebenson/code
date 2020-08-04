@@ -466,6 +466,12 @@
           },
           "Esc": function (cm) {
             if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+          },
+          "F2": function (cm) {
+            //cm.runMode(cm.getValue(), "application/javascript", null);
+            //console.log(cm.getValue());
+            console.log('%c Running code... ', 'background: #222; color: #bada55');
+            eval(cm.getValue());
           }
         }
       });
@@ -518,25 +524,26 @@
       });
       if (!theme) {
         //set to monokai
-        console.log('set to monokai');
+        //console.log('set to monokai');
         document.getElementById('theme').value = 'monokai';
       } else {
 
         document.getElementById('theme').value = theme;
       }
       if (!language) {
-        console.log('set to js');
+        //console.log('set to js');
         document.getElementById('lang').value = 'javascript';
       } else {
 
         document.getElementById('lang').value = language;
       }
       if (!indentUnit) {
-        console.log('set to 2');
+        //console.log('set to 2');
         document.getElementById('indentUnit').value = '2';
       } else {
         document.getElementById('indentUnit').value = indentUnit;
       }
+      console.log('%c Press F2 to run in browser\'s console. ', 'background: #222; color: #bada55');
     }
 
     // Helper to get hash from end of URL or generate a random one.
@@ -555,7 +562,7 @@
         window.history.pushState('page2', 'Title', url.href);
       }
       if (typeof console !== 'undefined') {
-        console.log('Firebase data: ', ref.toString());
+        //console.log('Firebase data: ', ref.toString());
       }
       return ref;
     }
