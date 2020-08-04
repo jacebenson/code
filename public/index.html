@@ -429,7 +429,7 @@
       <option value="8">8</option>
     </select>
 
-    <button onclick="execute()" id=execute>Execute</button>
+    <button onclick="execute()" id=execute>Execute<sup>(F2)</sup></button>
   </div>
   <div id="firepad"></div>
 
@@ -544,10 +544,10 @@
       } else {
         document.getElementById('indentUnit').value = indentUnit;
       }
-      console.log('%c Press F2 to run in browser\'s console. ', 'background: #222; color: #bada55');
+      console.log('%cPress F2 or execute button to run in browser\'s console. ', 'background: #222; color: #bada55');
     }
     function execute(){
-      console.log('%c Running code... ', 'background: #222; color: #bada55');
+      console.log('%cRunning code... ', 'background: #222; color: #bada55');
         try{
           eval(window.codeMirror.getValue());
         }catch(e){
