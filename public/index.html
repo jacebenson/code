@@ -428,6 +428,8 @@
       <option value="7">7</option>
       <option value="8">8</option>
     </select>
+
+    <button onclick="execute()" id=execute>Execute</button>
   </div>
   <div id="firepad"></div>
 
@@ -470,8 +472,7 @@
           "F2": function (cm) {
             //cm.runMode(cm.getValue(), "application/javascript", null);
             //console.log(cm.getValue());
-            console.log('%c Running code... ', 'background: #222; color: #bada55');
-            eval(cm.getValue());
+            execute();
           }
         }
       });
@@ -545,7 +546,15 @@
       }
       console.log('%c Press F2 to run in browser\'s console. ', 'background: #222; color: #bada55');
     }
+    function execute(){
+      console.log('%c Running code... ', 'background: #222; color: #bada55');
+        try{
+          eval(window.codeMirror.getValue());
+        }catch(e){
+          console.log('Error', e);
+        }
 
+    }
     // Helper to get hash from end of URL or generate a random one.
     function getExampleRef() {
       var url = new URL(window.location.href);
