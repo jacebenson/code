@@ -34,9 +34,18 @@ body {
 
 #lang-and-theme {
   position: absolute;
-  left: 175px;
-  top: 0px;
+  left: 190px;
+  top: 3px;
   bottom: 0;
   right: 0;
   height: auto;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+select {
+  font-size: 10px;
+}
+button {
+  font-size: 9px;
 }
