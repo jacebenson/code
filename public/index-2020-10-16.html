@@ -25,8 +25,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/markdown-fold.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/comment-fold.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/display/fullscreen.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/show-hint.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/javascript-hint.js"></script>
+
 
   <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
   <script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script>
@@ -35,8 +34,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/foldgutter.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/display/fullscreen.css">
  
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/show-hint.css">
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/apl/apl.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/asn.1/asn.1.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/asterisk/asterisk.js"></script>
@@ -464,7 +461,6 @@
         tabSize: 4,
         //indentWithTabs: true
         foldGutter: true,
-        hint: CodeMirror.hint.javascript,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
         extraKeys: {
           "F11": function (cm) {
@@ -480,17 +476,6 @@
           }
         }
       });
-//added code hinting.. this is not the best
-window.codeMirror.on("keydown", function (cm, event) {
-  if (
-    !(event.ctrlKey) &&
-    (event.keyCode >= 65 && event.keyCode <= 90) || 
-    (event.keyCode >= 97 && event.keyCode <= 122) || 
-    (event.keyCode >= 46 && event.keyCode <= 57)
-  ) {
-    CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
-  }
-});
       window.selectTheme = function () {
         var input = document.getElementById("theme");
         var theme = input.options[input.selectedIndex].value || 'monokai';
@@ -508,11 +493,6 @@ window.codeMirror.on("keydown", function (cm, event) {
         var url = new URL(window.location.href);
         url.searchParams.set('language', language);
         window.history.pushState('page2', 'Title', url.href);
-        if(language == 'javascript'){
-          window.codeMirror.setOption("hint", CodeMirror.hint.javascript);
-        } else {
-          window.codeMirror.setOption("hint", "");
-        }
       }
       window.selectIndentUnit = function () {
         var input = document.getElementById("indentUnit");
