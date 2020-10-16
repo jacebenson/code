@@ -27,6 +27,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/display/fullscreen.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/show-hint.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/javascript-hint.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/anyword-hint.js"></script>
 
   <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
   <script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script>
@@ -464,7 +465,7 @@
         tabSize: 4,
         //indentWithTabs: true
         foldGutter: true,
-        hint: CodeMirror.hint.javascript,
+        hint: CodeMirror.hint.anyword,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
         extraKeys: {
           "F11": function (cm) {
@@ -509,7 +510,7 @@ window.codeMirror.on("keydown", function (cm, event) {
         url.searchParams.set('language', language);
         window.history.pushState('page2', 'Title', url.href);
         if(language == 'javascript'){
-          window.codeMirror.setOption("hint", CodeMirror.hint.javascript);
+          window.codeMirror.setOption("hint", CodeMirror.hint.anyword);
         } else {
           window.codeMirror.setOption("hint", "");
         }
