@@ -326,7 +326,7 @@
 					console.log(`Theme changed to ${theme}`);
 				} else if (theme ==="" || theme === "null") {
                 } else {
-                    console.log('trying to load theme', 'http://localhost:8888/monaco-editor/themes/' + theme + '.json')
+                    //console.log('trying to load theme', 'http://localhost:8888/monaco-editor/themes/' + theme + '.json')
                     fetch('/monaco-editor/themes/' + theme + '.json')
                         .then(data => data.json())
                         .then(data => {
