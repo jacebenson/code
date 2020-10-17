@@ -233,11 +233,12 @@
 				//	Firepad.fromMonaco(firepadRef, window.editor);
 					(function setValues(){
 					var lang = document.getElementById('lang').value;
-					var theme = document.getElementById('theme').value;
+					var theme = document.getElementById('theme').value || 'vs-dark';
 					var indentUnit = parseInt(document.getElementById('indentUnit').value,10);
 					
 					var url = new URL(window.location.href);
 					let params = new URLSearchParams(url.search);
+                    if(params.get('lang') || params.get('theme') || params.get('indent')){
 					var props = {
 						lang: params.get('lang'),
 						theme: decodeURIComponent(params.get('theme')),
@@ -247,14 +248,17 @@
 					if(props.lang){
 						document.getElementById('lang').value = props.lang;
 					}
-					if(props.theme || props.theme !=""){
+					if(props.theme){
+                        if(props.theme == "null"){props.theme="vs-dark"}
 						console.log('trying to set theme to', props.theme);
+                        //if(props.theme == ""){props.theme="vs-dark"}
 						document.getElementById('theme').value = props.theme;
 						selectTheme()
 					}
 					if(props.indent){
 						document.getElementById('indentUnit').value = props.indent;
 					}
+                    }
 				})()
 				});
 
@@ -311,17 +315,18 @@
 			}
 			function selectTheme() {
 				var theme = document.getElementById('theme').value;
+             
 				var url = new URL(window.location.href);
 				var urlParams = url.searchParams.set('theme',encodeURIComponent(theme));
 	            window.history.pushState({}, "Theme=" + theme, url.pathname + url.search); 
 				theme = theme.replace(/[\s\(\)_]/g,'');
-				
-				
+				console.log("theme", theme, typeof theme)
 				if (theme === 'vs' || theme === 'vs-dark') {
                     monaco.editor.setTheme(theme);
 					console.log(`Theme changed to ${theme}`);
-				} else {
-                    //console.log('trying to load theme', 'http://localhost:8888/monaco-editor/themes/' + theme + '.json')
+				} else if (theme ==="" || theme === "null") {
+                } else {
+                    console.log('trying to load theme', 'http://localhost:8888/monaco-editor/themes/' + theme + '.json')
                     fetch('/monaco-editor/themes/' + theme + '.json')
                         .then(data => data.json())
                         .then(data => {
