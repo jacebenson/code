@@ -1,602 +1,343 @@
-<!doctype html>
-<!-- See http://www.firepad.io/docs/ for detailed embedding docs. -->
-<html>
+<!DOCTYPE html>
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+            <style>
 
-<head>
-  <meta charset="utf-8" />
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+                #container,
+                body,
+			html {
+                    position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+		</style>
 
-  <!-- CodeMirror and its JavaScript mode file -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/codemirror.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/mode/overlay.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/mode/simple.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/lint.js"></script>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/html-lint.js"></script> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/json-lint.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/javascript-lint.js"></script>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/coffeescript-lint.js"></script> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/css-lint.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/foldcode.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/foldgutter.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/brace-fold.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/xml-fold.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/indent-fold.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/markdown-fold.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/comment-fold.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/display/fullscreen.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/show-hint.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/javascript-hint.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/anyword-hint.js"></script>
+            <!-- Firebase -->
+		<script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+            <!-- Firepad -->
+		<link rel="stylesheet" href="//unpkg.com/firepad@latest/dist/firepad.css" />
+            <script src="//unpkg.com/firepad@latest/dist/firepad.min.js"></script>
 
-  <script src="https://unpkg.com/jshint@2.9.6/dist/jshint.js"></script>
-  <script src="https://unpkg.com/csslint@1.0.5/dist/csslint.js"></script>
+            <!--loader.js-->
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/lint/lint.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/fold/foldgutter.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/display/fullscreen.css">
- 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/addon/hint/show-hint.css">
+		<script src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
+            <!-- User List and random names-->
+		
+		<script src="js/firepad-userlist.js"></script>
+            <script src="js/characters.js"></script>
+            <link rel="stylesheet" href="css/firepad-userlist.css" />
+            <link rel="stylesheet" href="css/style.css" />
+		
+        </head>
+        <body onload="init()">
+		<div id="container">
+                <div id="userlist"></div>
+                <div id="lang-and-theme">
+                    Language
+				<select onchange="selectLang()" id="lang">
+                        <option value="abap">ABAP</option>
+                        <option value="apex">apex</option>
+                        <option value="azcli">azcli</option>
+                        <option value="bat">bat</option>
+                        <option value="cameligo">cameligo</option>
+                        <option value="clojure">clojure</option>
+                        <option value="coffee">coffee</option>
+                        <option value="cpp">cpp</option>
+                        <option value="csharp">csharp</option>
+                        <option value="csp">csp</option>
+                        <option value="css">css</option>
+                        <option value="dart">dart</option>
+                        <option value="dockerfile">dockerfile</option>
+                        <option value="fillers">fillers</option>
+                        <option value="fsharp">fsharp</option>
+                        <option value="go">go</option>
+                        <option value="graphql">graphql</option>
+                        <option value="handlebars">handlebars</option>
+                        <option value="hcl">hcl</option>
+                        <option value="html">html</option>
+                        <option value="ini">ini</option>
+                        <option value="java">java</option>
+                        <option value="javascript" selected="selected">javascript</option>
+                        <option value="julia">ejulialm</option>
+                        <option value="kotlin">kotlin</option>
+                        <option value="less">less</option>
+                        <option value="lexon">lexon</option>
+                        <option value="lua">lua</option>
+                        <option value="markdown">markdown</option>
+                        <option value="mips">mips</option>
+                        <option value="msdax">msdax</option>
+                        <option value="mysql">mysql</option>
+                        <option value="objective-c">objective-c</option>
+                        <option value="pascal">pascal</option>
+                        <option value="pascaligo">pascaligo</option>
+                        <option value="perl">perl</option>
+                        <option value="pgsqk">pgsqk</option>
+                        <option value="php">php</option>
+                        <option value="postiats">postiats</option>
+                        <option value="powerquery">powerquery</option>
+                        <option value="powershell">powershell</option>
+                        <option value="pug">pug</option>
+                        <option value="python">python</option>
+                        <option value="r">r</option>
+                        <option value="razor">razor</option>
+                        <option value="redis">redis</option>
+                        <option value="redshift">redshift</option>
+                        <option value="restructuredtext">restructuredtext</option>
+                        <option value="ruby">ruby</option>
+                        <option value="rust">rust</option>
+                        <option value="sb">sb</option>
+                        <option value="scala">scala</option>
+                        <option value="scheme">scheme</option>
+                        <option value="scss">scss</option>
+                        <option value="shell">shell</option>
+                        <option value="solidity">solidity</option>
+                        <option value="sophia">sophia</option>
+                        <option value="sql">sql</option>
+                        <option value="st">st</option>
+                        <option value="swift">swift</option>
+                        <option value="systemverilog">systemverilog</option>
+                        <option value="tcl">tcl</option>
+                        <option value="test">test</option>
+                        <option value="twig">twig</option>
+                        <option value="typescript">typescript</option>
+                        <option value="vb">vb</option>
+                        <option value="xml">xml</option>
+                        <option value="yaml">yaml</option>
+                    </select>
+				Theme
+				<select onchange="selectTheme()" id="theme">
+                        <option value="vs">vs</option>
+                        <option value="vs-dark" selected="selected">vs-dark</option>
+                        <option value="Active4D">Active4D</option>
+                        <option value="All Hallows Eve">All Hallows Eve</option>
+                        <option value="Amy">Amy</option>
+                        <option value="Birds of Paradise">Birds of Paradise</option>
+                        <option value="Blackboard">Blackboard</option>
+                        <option value="Brilliance Black">Brilliance Black</option>
+                        <option value="BrillianceDull">Brilliance Dull</option>
+                        <option value="Chrome DevTools">Chrome DevTools</option>
+                        <option value="Clouds Midnight">Clouds Midnight</option>
+                        <option value="Clouds">Clouds</option>
+                        <option value="Cobalt">Cobalt</option>
+                        <option value="Dawn">Dawn</option>
+                        <option value="Dominion Day">Dominion Day</option>
+                        <option value="Dreamweaver">Dreamweaver</option>
+                        <option value="Eiffel">Eiffel</option>
+                        <option value="Espresso Libre">Espresso Libre</option>
+                        <option value="GitHub">GitHub</option>
+                        <option value="IDLE">IDLE</option>
+                        <option value="Katzenmilch">Katzenmilch</option>
+                        <option value="Kuroir Theme">Kuroir Theme</option>
+                        <option value="LAZY">LAZY</option>
+                        <option value="MagicWB (Amiga)">MagicWB (Amiga)</option>
+                        <option value="Merbivore Soft">Merbivore Soft</option>
+                        <option value="Merbivore">Merbivore</option>
+                        <option value="Monokai Bright">Monokai Bright</option>
+                        <option value="Monokai">Monokai</option>
+                        <option value="Night Owl">Night Owl</option>
+                        <option value="Oceanic Next">Oceanic Next</option>
+                        <option value="Pastels on Dark">Pastels on Dark</option>
+                        <option value="Slush and Poppies">Slush and Poppies</option>
+                        <option value="Solarized-dark">Solarized-dark</option>
+                        <option value="Solarized-light">Solarized-light</option>
+                        <option value="SpaceCadet">SpaceCadet</option>
+                        <option value="Sunburst">Sunburst</option>
+                        <option value="Textmate (Mac Classic)">Textmate (Mac Classic)</option>
+                        <option value="Tomorrow-Night-Blue">Tomorrow-Night-Blue</option>
+                        <option value="Tomorrow-Night-Bright">Tomorrow-Night-Bright</option>
+                        <option value="Tomorrow-Night-Eighties">Tomorrow-Night-Eighties</option>
+                        <option value="Tomorrow-Night">Tomorrow-Night</option>
+                        <option value="Tomorrow">Tomorrow</option>
+                        <option value="Twilight">Twilight</option>
+                        <option value="Upstream Sunburst">Upstream Sunburst</option>
+                        <option value="Vibrant Ink">Vibrant Ink</option>
+                        <option value="Xcode_default">Xcode_default</option>
+                        <option value="Zenburnesque">Zenburnesque</option>
+                        <option value="iPlastic">iPlastic</option>
+                        <option value="idleFingers">idleFingers</option>
+                        <option value="krTheme">krTheme</option>
+                        <option value="monoindustrial">monoindustrial</option>
+                        <option value="themelist">themelist</option>
+                    </select>
+					Indent Unit
+				<select onchange="selectIndentUnit()" id="indentUnit">
+                        <option value="1">1</option>
+                        <option value="2" selected="selected">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                    </select>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/apl/apl.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/asn.1/asn.1.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/asterisk/asterisk.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/brainfuck/brainfuck.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/clike/clike.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/clojure/clojure.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/cmake/cmake.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/cobol/cobol.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/coffeescript/coffeescript.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/commonlisp/commonlisp.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/crystal/crystal.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/css/css.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/cypher/cypher.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/d/d.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/dart/dart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/django/django.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/dockerfile/dockerfile.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/diff/diff.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/dtd/dtd.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/dylan/dylan.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/ebnf/ebnf.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/ecl/ecl.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/eiffel/eiffel.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/elm/elm.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/erlang/erlang.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/factor/factor.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/fcl/fcl.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/forth/forth.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/fortran/fortran.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/mllike/mllike.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/gas/gas.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/gherkin/gherkin.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/go/go.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/groovy/groovy.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/haml/haml.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/handlebars/handlebars.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/haskell/haskell.js"></script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/haskell-literate/haskell-literate.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/haxe/haxe.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/htmlembedded/htmlembedded.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/htmlmixed/htmlmixed.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/http/http.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/idl/idl.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/javascript/javascript.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/jsx/jsx.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/jinja2/jinja2.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/julia/julia.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/livescript/livescript.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/lua/lua.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/markdown/markdown.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/gfm/gfm.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/mathematica/mathematica.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/mbox/mbox.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/mirc/mirc.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/modelica/modelica.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/mscgen/mscgen.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/mumps/mumps.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/nginx/nginx.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/nsis/nsis.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/ntriples/ntriples.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/octave/octave.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/oz/oz.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/pascal/pascal.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/pegjs/pegjs.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/perl/perl.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/asciiarmor/asciiarmor.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/php/php.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/pig/pig.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/powershell/powershell.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/properties/properties.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/protobuf/protobuf.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/pug/pug.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/puppet/puppet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/python/python.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/q/q.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/r/r.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/rpm/rpm.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/rst/rst.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/ruby/ruby.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/rust/rust.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/sas/sas.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/sass/sass.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/spreadsheet/spreadsheet.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/scheme/scheme.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/shell/shell.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/sieve/sieve.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/slim/slim.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/smalltalk/smalltalk.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/smarty/smarty.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/solr/solr.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/soy/soy.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/stylus/stylus.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/sql/sql.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/sparql/sparql.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/swift/swift.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/stex/stex.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/tcl/tcl.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/textile/textile.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/tiddlywiki/tiddlywiki.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/tiki/tiki.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/toml/toml.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/tornado/tornado.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/troff/troff.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/ttcn/ttcn.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/ttcn-cfg/ttcn-cfg.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/turtle/turtle.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/twig/twig.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/vb/vb.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/vbscript/vbscript.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/velocity/velocity.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/verilog/verilog.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/vhdl/vhdl.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/vue/vue.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/webidl/webidl.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/xml/xml.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/xquery/xquery.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/yacas/yacas.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/yaml/yaml.js"></script>
-  <script
-    src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/yaml-frontmatter/yaml-frontmatter.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/mode/z80/z80.js"></script>
+                    <button onclick="execute()" id="execute">Execute</button>
+                </div>
+                <div id="firepad"></div>
+            </div>
+            <script>
+                function init() {
+				//// Initialize Firebase.
+				var config = {
+                    apiKey: "AIzaSyAzkdZJNCMca5u0wBAxIejM8CA-umIJhzc",
+					projectId: "code-jacebenson-com.firebaseapp.com",
+					databaseURL: "https://code-jacebenson-com.firebaseio.com"
+				};
+				firebase.initializeApp(config);
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/codemirror.css" />
+				//// Get Firebase Database reference.
+				var firepadRef = getExampleRef();
 
+				//// Create Monaco and firepad.
+				require.config({
+                    paths: {
+                    'vs': '../monaco-editor/vs'
+					}
+				});
+				require(['vs/editor/editor.main'], function () {
+                    window.editor = monaco
+                        .editor
+                        .create(document.getElementById('firepad'), {
+                            language: document.getElementById('lang').value || 'javascript',
+                            theme: document.getElementById('theme').value || 'vs-dark',
+							tabSize: parseInt(document.getElementById('indentUnit').value,10) || 2,
+                        });
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/3024-day.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/3024-night.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/abcdef.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/ambiance.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/base16-dark.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/base16-light.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/bespin.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/blackboard.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/cobalt.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/colorforth.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/darcula.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/dracula.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/duotone-dark.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/duotone-light.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/eclipse.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/elegant.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/erlang-dark.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/gruvbox-dark.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/hopscotch.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/icecoder.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/idea.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/isotope.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/lesser-dark.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/liquibyte.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/lucario.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/material.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/mbo.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/mdn-like.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/midnight.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/monokai.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/neat.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/neo.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/night.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/nord.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/oceanic-next.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/panda-syntax.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/paraiso-dark.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/paraiso-light.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/pastel-on-dark.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/railscasts.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/rubyblue.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/seti.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/shadowfox.css">
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/solarized dark.css"> -->
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/solarized light.css"> -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/the-matrix.css">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/tomorrow-night-bright.css">
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/tomorrow-night-eighties.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/ttcn.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/twilight.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/vibrant-ink.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/xq-dark.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/xq-light.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/yeti.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/yonce.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.46.0/theme/zenburn.css">
+							     // Create a random ID to use as our user ID (we must give this to firepad and FirepadUserList).
+				var userId = Math.floor(Math.random() * 9999999999).toString();
+				var randomUser = characters.randomUser();
+				var defaultText = [];
+				defaultText = defaultText.join('\n');
+				var firepad = Firepad.fromMonaco(firepadRef, window.editor, {
+					defaultText: defaultText,
+					userId: userId
+				});
 
+				//// Create FirepadUserList (with our desired userId).
+				var firepadUserList = FirepadUserList.fromDiv(firepadRef.child('users'),
+					document.getElementById('userlist'), userId, randomUser);
 
-  <!-- Firepad -->
-  <link rel="stylesheet" href="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.css" />
-  <script src="https://cdn.firebase.com/libs/firepad/1.4.0/firepad.min.js"></script>
-  <!-- User List and random names-->
-  <script src="js/firepad-userlist.js"></script>
-  <script src="js/characters.js"></script>
-  <link rel="stylesheet" href="css/firepad-userlist.css" />
-  <link rel="stylesheet" href="css/style.css">
-</head>
+				//// Initialize contents.
+				firepad.on('ready', function () {
+					if (firepad.isHistoryEmpty()) {
+					// firepad.setText('Check out the user list to the left!');
+					}
+				});
+				
+				//	Firepad.fromMonaco(firepadRef, window.editor);
+					(function setValues(){
+					var lang = document.getElementById('lang').value;
+					var theme = document.getElementById('theme').value;
+					var indentUnit = parseInt(document.getElementById('indentUnit').value,10);
+					
+					var url = new URL(window.location.href);
+					let params = new URLSearchParams(url.search);
+					var props = {
+						lang: params.get('lang'),
+						theme: decodeURIComponent(params.get('theme')),
+						indent: params.get('indent'),
+					}
+					console.log(props);
+					if(props.lang){
+						document.getElementById('lang').value = props.lang;
+					}
+					if(props.theme || props.theme !=""){
+						console.log('trying to set theme to', props.theme);
+						document.getElementById('theme').value = props.theme;
+						selectTheme()
+					}
+					if(props.indent){
+						document.getElementById('indentUnit').value = props.indent;
+					}
+				})()
+				});
 
-<body onload="init()">
-  <div id="userlist"></div>
-  <div id="lang-and-theme">
-    Language
-    <select onchange="selectLang()" id="lang">
-      <option value="">Choose Language</option>
-      <option value="apl">apl</option>
-      <option value="asn.1">asn.1</option>
-      <option value="asterisk">asterisk</option>
-      <option value="brainfuck">brainfuck</option>
-      <option value="clike">clike</option>
-      <option value="clojure">clojure</option>
-      <option value="cmake">cmake</option>
-      <option value="cobol">cobol</option>
-      <option value="coffeescript">coffeescript</option>
-      <option value="commonlisp">commonlisp</option>
-      <option value="crystal">crystal</option>
-      <option value="css">css</option>
-      <option value="cypher">cypher</option>
-      <option value="d">d</option>
-      <option value="dart">dart</option>
-      <option value="django">django</option>
-      <option value="dockerfile">dockerfile</option>
-      <option value="diff">diff</option>
-      <option value="dtd">dtd</option>
-      <option value="dylan">dylan</option>
-      <option value="ebnf">ebnf</option>
-      <option value="ecl">ecl</option>
-      <option value="eiffel">eiffel</option>
-      <option value="elm">elm</option>
-      <option value="erlang">erlang</option>
-      <option value="factor">factor</option>
-      <option value="fcl">fcl</option>
-      <option value="forth">forth</option>
-      <option value="fortran">fortran</option>
-      <option value="mllike">mllike</option>
-      <option value="gas">gas</option>
-      <option value="gherkin">gherkin</option>
-      <option value="go">go</option>
-      <option value="groovy">groovy</option>
-      <option value="haml">haml</option>
-      <option value="handlebars">handlebars</option>
-      <option value="haskell">haskell</option>
-      <option value="haskell-literate">haskell-literate</option>
-      <option value="haxe">haxe</option>
-      <option value="htmlembedded">htmlembedded</option>
-      <option value="htmlmixed">htmlmixed</option>
-      <option value="http">http</option>
-      <option value="idl">idl</option>
-      <option value="javascript">javascript</option>
-      <option value="jsx">jsx</option>
-      <option value="jinja2">jinja2</option>
-      <option value="julia">julia</option>
-      <option value="livescript">livescript</option>
-      <option value="lua">lua</option>
-      <option value="markdown">markdown</option>
-      <option value="gfm">gfm</option>
-      <option value="mathematica">mathematica</option>
-      <option value="mbox">mbox</option>
-      <option value="mirc">mirc</option>
-      <option value="modelica">modelica</option>
-      <option value="mscgen">mscgen</option>
-      <option value="mumps">mumps</option>
-      <option value="nginx">nginx</option>
-      <option value="nsis">nsis</option>
-      <option value="ntriples">ntriples</option>
-      <option value="octave">octave</option>
-      <option value="oz">oz</option>
-      <option value="pascal">pascal</option>
-      <option value="pegjs">pegjs</option>
-      <option value="perl">perl</option>
-      <option value="asciiarmor">asciiarmor</option>
-      <option value="php">php</option>
-      <option value="pig">pig</option>
-      <option value="powershell">powershell</option>
-      <option value="properties">properties</option>
-      <option value="protobuf">protobuf</option>
-      <option value="pug">pug</option>
-      <option value="puppet">puppet</option>
-      <option value="python">python</option>
-      <option value="q">q</option>
-      <option value="r">r</option>
-      <option value="rpm">rpm</option>
-      <option value="rst">rst</option>
-      <option value="ruby">ruby</option>
-      <option value="rust">rust</option>
-      <option value="sas">sas</option>
-      <option value="sass">sass</option>
-      <option value="spreadsheet">spreadsheet</option>
-      <option value="scheme">scheme</option>
-      <option value="shell">shell</option>
-      <option value="sieve">sieve</option>
-      <option value="slim">slim</option>
-      <option value="smalltalk">smalltalk</option>
-      <option value="smarty">smarty</option>
-      <option value="solr">solr</option>
-      <option value="soy">soy</option>
-      <option value="stylus">stylus</option>
-      <option value="sql">sql</option>
-      <option value="sparql">sparql</option>
-      <option value="swift">swift</option>
-      <option value="stex">stex</option>
-      <option value="tcl">tcl</option>
-      <option value="textile">textile</option>
-      <option value="tiddlywiki">tiddlywiki</option>
-      <option value="tiki">tiki</option>
-      <option value="toml">toml</option>
-      <option value="tornado">tornado</option>
-      <option value="troff">troff</option>
-      <option value="ttcn">ttcn</option>
-      <option value="ttcn-cfg">ttcn-cfg</option>
-      <option value="turtle">turtle</option>
-      <option value="twig">twig</option>
-      <option value="vb">vb</option>
-      <option value="vbscript">vbscript</option>
-      <option value="velocity">velocity</option>
-      <option value="verilog">verilog</option>
-      <option value="vhdl">vhdl</option>
-      <option value="vue">vue</option>
-      <option value="webidl">webidl</option>
-      <option value="xml">xml</option>
-      <option value="xquery">xquery</option>
-      <option value="yacas">yacas</option>
-      <option value="yaml">yaml</option>
-      <option value="yaml-frontmatter">yaml-frontmatter</option>
-      <option value="z80">z80</option>
-    </select>
-    Theme
-    <select onchange="selectTheme()" id="theme">
-      <option>Choose Theme</option>
-      <option value="3024-day">3024-day</option>
-      <option value="3024-night">3024-night</option>
-      <option value="abcdef">abcdef</option>
-      <option value="ambiance">ambiance</option>
-      <option value="base16-dark">base16-dark</option>
-      <option value="base16-light">base16-light</option>
-      <option value="bespin">bespin</option>
-      <option value="blackboard">blackboard</option>
-      <option value="cobalt">cobalt</option>
-      <option value="colorforth">colorforth</option>
-      <option value="darcula">darcula</option>
-      <option value="dracula">dracula</option>
-      <option value="duotone-dark">duotone-dark</option>
-      <option value="duotone-light">duotone-light</option>
-      <option value="eclipse">eclipse</option>
-      <option value="elegant">elegant</option>
-      <option value="erlang-dark">erlang-dark</option>
-      <option value="gruvbox-dark">gruvbox-dark</option>
-      <option value="hopscotch">hopscotch</option>
-      <option value="icecoder">icecoder</option>
-      <option value="idea">idea</option>
-      <option value="isotope">isotope</option>
-      <option value="lesser-dark">lesser-dark</option>
-      <option value="liquibyte">liquibyte</option>
-      <option value="lucario">lucario</option>
-      <option value="material">material</option>
-      <option value="mbo">mbo</option>
-      <option value="mdn-like">mdn-like</option>
-      <option value="midnight">midnight</option>
-      <option value="monokai">monokai</option>
-      <option value="neat">neat</option>
-      <option value="neo">neo</option>
-      <option value="night">night</option>
-      <option value="nord">nord</option>
-      <option value="oceanic-next">oceanic-next</option>
-      <option value="panda-syntax">panda-syntax</option>
-      <option value="paraiso-dark">paraiso-dark</option>
-      <option value="paraiso-light">paraiso-light</option>
-      <option value="pastel-on-dark">pastel-on-dark</option>
-      <option value="railscasts">railscasts</option>
-      <option value="rubyblue">rubyblue</option>
-      <option value="seti">seti</option>
-      <option value="shadowfox">shadowfox</option>
-      <option value="the-matrix">the-matrix</option>
-      <option value="tomorrow-night-bright">tomorrow-night-bright</option>
-      <option value="tomorrow-night-eighties">tomorrow-night-eighties</option>
-      <option value="ttcn">ttcn</option>
-      <option value="twilight">twilight</option>
-      <option value="vibrant-ink">vibrant-ink</option>
-      <option value="xq-dark">xq-dark</option>
-      <option value="xq-light">xq-light</option>
-      <option value="yeti">yeti</option>
-      <option value="yonce">yonce</option>
-      <option value="zenburn">zenburn</option>
-    </select>
-    Indent Unit
-    <select onchange="selectIndentUnit()" id="indentUnit">
+				// Helper to get hash from end of URL or generate a random one.
+				function getExampleRef() {
+					var url = new URL(window.location.href);
+					var ref = firebase
+						.database()
+						.ref();
+					var hash = url
+						.searchParams
+						.get('id');
+					if (hash !== null) {
+                    ref = ref.child(hash);
+					} else {
+						//ref = ref.push();  generate unique location.
+						var d = new Date();
+						d = d
+							.toISOString()
+							.split('.')[0]
+							.replace(/\:/gi, '-');
+						ref = ref.child(d);
+						url
+							.searchParams
+							.set('id', ref.key);
+						window
+							.history
+							.pushState('page2', 'Title', url.href);
+					}
+					if (typeof console !== 'undefined') {
+                    //console.log('Firebase data: ', ref.toString());
+                }
+					return ref;
+				}
+				
 
-      <option>?</option>
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
-      <option value="7">7</option>
-      <option value="8">8</option>
-    </select>
-
-    <button onclick="execute()" id=execute>Execute</button>
-</div>
-  <div id="firepad"></div>
-
-  <script>
-
-    function init() {
-      //// Initialize Firebase.
-      var config = {
-        apiKey: "AIzaSyAzkdZJNCMca5u0wBAxIejM8CA-umIJhzc",
-        authDomain: "code-jacebenson-com.firebaseapp.com",
-        databaseURL: "https://code-jacebenson-com.firebaseio.com"
-      };
-      firebase.initializeApp(config);
-
-      //// Get Firebase Database reference.
-      var firepadRef = getExampleRef();
-      var url = new URL(window.location.href);
-      var theme = url.searchParams.get('theme');
-      var language = url.searchParams.get('language');
-      var indentUnit = url.searchParams.get('indentUnit');
-      window.codeMirror = CodeMirror(document.getElementById('firepad'), {
-        lineNumbers: true,
-        matchBrackets: true,
-        styleActiveLine: true,
-        mode: language || 'javascript',
-        theme: theme || 'monokai',
-        lint: true,
-        indentUnit: indentUnit || 2,
-        tabSize: 4,
-        //indentWithTabs: true
-        foldGutter: true,
-        hint: CodeMirror.hint.anyword,
-        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-        extraKeys: {
-          "F11": function (cm) {
-            cm.setOption("fullScreen", !cm.getOption("fullScreen"));
-          },
-          "Esc": function (cm) {
-            if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
-          },
-          "F2": function (cm) {
-            //cm.runMode(cm.getValue(), "application/javascript", null);
-            //console.log(cm.getValue());
-            execute();
-          }
-        }
-      });
-//added code hinting.. this is not the best
-window.codeMirror.on("keydown", function (cm, event) {
-  if (
-    !(event.ctrlKey) &&
-    (event.keyCode >= 65 && event.keyCode <= 90) || 
-    (event.keyCode >= 97 && event.keyCode <= 122) || 
-    (event.keyCode >= 46 && event.keyCode <= 57)
-  ) {
-    CodeMirror.commands.autocomplete(cm, null, {completeSingle: false});
-  }
-});
-      window.selectTheme = function () {
-        var input = document.getElementById("theme");
-        var theme = input.options[input.selectedIndex].value || 'monokai';
-        window.codeMirror.setOption("theme", theme);
-
-        var url = new URL(window.location.href);
-        url.searchParams.set('theme', theme);
-        window.history.pushState('page2', 'Title', url.href);
-      }
-      window.selectLang = function () {
-        var input = document.getElementById("lang");
-        var language = input.options[input.selectedIndex].value || 'javascript';
-        window.codeMirror.setOption("mode", language);
-
-        var url = new URL(window.location.href);
-        url.searchParams.set('language', language);
-        window.history.pushState('page2', 'Title', url.href);
-        if(language == 'javascript'){
-          window.codeMirror.setOption("hint", CodeMirror.hint.anyword);
-        } else {
-          window.codeMirror.setOption("hint", "");
-        }
-      }
-      window.selectIndentUnit = function () {
-        var input = document.getElementById("indentUnit");
-        var indentUnit = parseInt(input.options[input.selectedIndex].value, 10) || 2;
-        window.codeMirror.setOption("indentUnit", indentUnit);
-
-        var url = new URL(window.location.href);
-        url.searchParams.set('indentUnit', indentUnit);
-        window.history.pushState('page2', 'Title', url.href);
-      }
-      // Create a random ID to use as our user ID (we must give this to firepad and FirepadUserList).
-      var userId = Math.floor(Math.random() * 9999999999).toString();
-      var randomUser = characters.randomUser();
-      var defaultText = [];
-      defaultText = defaultText.join('\n');
-      var firepad = Firepad.fromCodeMirror(firepadRef, window.codeMirror, {
-        defaultText: defaultText,
-        userId: userId
-      });
-
-      //// Create FirepadUserList (with our desired userId).
-      var firepadUserList = FirepadUserList.fromDiv(firepadRef.child('users'),
-        document.getElementById('userlist'), userId, randomUser);
-
-      //// Initialize contents.
-      firepad.on('ready', function () {
-        if (firepad.isHistoryEmpty()) {
-          // firepad.setText('Check out the user list to the left!');
-        }
-      });
-      if (!theme) {
-        //set to monokai
-        //console.log('set to monokai');
-        document.getElementById('theme').value = 'monokai';
-      } else {
-
-        document.getElementById('theme').value = theme;
-      }
-      if (!language) {
-        //console.log('set to js');
-        document.getElementById('lang').value = 'javascript';
-      } else {
-
-        document.getElementById('lang').value = language;
-      }
-      if (!indentUnit) {
-        //console.log('set to 2');
-        document.getElementById('indentUnit').value = '2';
-      } else {
-        document.getElementById('indentUnit').value = indentUnit;
-      }
-      console.log('%cPress F2 or execute button to run in browser\'s console. ', 'background: #222; color: #bada55');
-    }
-    function execute(){
-      console.log('%cRunning code... ', 'background: #222; color: #bada55');
-        try{
-          eval(window.codeMirror.getValue());
-        }catch(e){
-          console.log('Error', e);
-        }
-
-    }
-    // Helper to get hash from end of URL or generate a random one.
-    function getExampleRef() {
-      var url = new URL(window.location.href);
-      var ref = firebase.database().ref();
-      var hash = url.searchParams.get('id');
-      if (hash !== null) {
-        ref = ref.child(hash);
-      } else {
-        //ref = ref.push(); // generate unique location.
-        var d = new Date();
-        d = d.toISOString().split('.')[0].replace(/\:/gi, '-');
-        ref = ref.child(d);
-        url.searchParams.set('id', ref.key);
-        window.history.pushState('page2', 'Title', url.href);
-      }
-      if (typeof console !== 'undefined') {
-        //console.log('Firebase data: ', ref.toString());
-      }
-      return ref;
-    }
-  </script>
-</body>
-
-</html>
+			}
+			function execute() {
+                    console.log('%cRunning code... ', 'background: #222; color: #bada55');
+				try {
+                    eval(window.editor.getValue());
+					console.log('%Done', 'background: #222; color: #bada55');
+				} catch (e) {
+                    console.log('Error', e);
+				}
+			}
+			function selectLang() {
+				var lang = document.getElementById('lang').value;
+				var url = new URL(window.location.href);
+				var urlParams = url.searchParams.set('lang',lang);
+	            window.history.pushState({}, "Lang=" + lang, url.pathname + url.search); 
+				monaco.editor.setModelLanguage(window.editor.getModel(), lang);
+				console.log(`Model language was changed to ${window.editor.getModel().getLanguageIdentifier().language}`);
+			}
+			function selectTheme() {
+				var theme = document.getElementById('theme').value;
+				var url = new URL(window.location.href);
+				var urlParams = url.searchParams.set('theme',encodeURIComponent(theme));
+	            window.history.pushState({}, "Theme=" + theme, url.pathname + url.search); 
+				theme = theme.replace(/[\s\(\)_]/g,'');
+				
+				
+				if (theme === 'vs' || theme === 'vs-dark') {
+                    monaco.editor.setTheme(theme);
+					console.log(`Theme changed to ${theme}`);
+				} else {
+                    //console.log('trying to load theme', 'http://localhost:8888/monaco-editor/themes/' + theme + '.json')
+                    fetch('/monaco-editor/themes/' + theme + '.json')
+                        .then(data => data.json())
+                        .then(data => {
+                            monaco.editor.defineTheme(theme, data);
+                            monaco.editor.setTheme(theme);
+                            console.log(`Theme changed to ${theme}`);
+                        })
+                }
+			}
+			function selectIndentUnit(){
+				var indentUnit = parseInt(document.getElementById('indentUnit').value,10)
+				var url = new URL(window.location.href);
+				var urlParams = url.searchParams.set('indent',indentUnit);
+	            window.history.pushState({}, "Indent=" + indentUnit, url.pathname + url.search); 
+				window.editor.getModel().updateOptions({tabSize: indentUnit});
+			}
+		</script>
+        </body>
+    </html>
