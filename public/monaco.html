@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-		<style>
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+            <style>
 
-			#container,
-			body,
+                #container,
+                body,
 			html {
-				position: absolute;
+                    position: absolute;
 				left: 0;
 				top: 0;
 				width: 100%;
@@ -18,251 +18,193 @@
 			}
 		</style>
 
-		<!-- Firebase -->
+            <!-- Firebase -->
 		<script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
-		<!-- Firepad -->
-		<link rel="stylesheet" href="//unpkg.com/firepad@latest/dist/firepad.css"/>
-		<script src="//unpkg.com/firepad@latest/dist/firepad.min.js"></script>
+            <!-- Firepad -->
+		<link rel="stylesheet" href="//unpkg.com/firepad@latest/dist/firepad.css" />
+            <script src="//unpkg.com/firepad@latest/dist/firepad.min.js"></script>
 
-		<!--loader.js-->
+            <!--loader.js-->
 
 		<script src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
-		<!-- User List and random names-->
+            <!-- User List and random names-->
 		<!--
 		<script src="js/firepad-userlist.js"></script>
-		<script src="js/characters.js"></script>
-		<link rel="stylesheet" href="css/firepad-userlist.css"/>
-		<link rel="stylesheet" href="css/style.css"/>
+            <script src="js/characters.js"></script>
+            <link rel="stylesheet" href="css/firepad-userlist.css" />
+            <link rel="stylesheet" href="css/style.css" />
 		-->
 		<style>
-			html {
-				height: 100%;
+                html {
+                    height: 100%;
 			}
 			body {
-				margin: 0;
+                    margin: 0;
 				height: 100%;
 				position: relative;
 			}
 			/* Height / width / positioning can be customized for your use case.
            For demo purposes, we make firepad fill the entire browser. */
 			#firepad {
-				width: 100%;
+                    width: 100%;
 				height: 100%;
 			}
 		</style>
-	</head>
-	<body onload="init()">
-		<!--<h2>Monaco Editor Sample - Loading with requirejs</h2>-->
+        </head>
+        <body onload="init()">
+            <!--<h2>Monaco Editor Sample - Loading with requirejs</h2>-->
 
 		<!--<div id="container" style="width: 800px; height: 600px; border: 1px solid grey"></div>-->
 		<div id="container">
-			<div id="userlist"></div>
-			<div id="lang-and-theme">
-				Language
+                <div id="userlist"></div>
+                <div id="lang-and-theme">
+                    Language
 				<select onchange="selectLang()" id="lang">
-					<option value="">Choose Language</option>
-					<option value="apl">apl</option>
-					<option value="asn.1">asn.1</option>
-					<option value="asterisk">asterisk</option>
-					<option value="brainfuck">brainfuck</option>
-					<option value="clike">clike</option>
-					<option value="clojure">clojure</option>
-					<option value="cmake">cmake</option>
-					<option value="cobol">cobol</option>
-					<option value="coffeescript">coffeescript</option>
-					<option value="commonlisp">commonlisp</option>
-					<option value="crystal">crystal</option>
-					<option value="css">css</option>
-					<option value="cypher">cypher</option>
-					<option value="d">d</option>
-					<option value="dart">dart</option>
-					<option value="django">django</option>
-					<option value="dockerfile">dockerfile</option>
-					<option value="diff">diff</option>
-					<option value="dtd">dtd</option>
-					<option value="dylan">dylan</option>
-					<option value="ebnf">ebnf</option>
-					<option value="ecl">ecl</option>
-					<option value="eiffel">eiffel</option>
-					<option value="elm">elm</option>
-					<option value="erlang">erlang</option>
-					<option value="factor">factor</option>
-					<option value="fcl">fcl</option>
-					<option value="forth">forth</option>
-					<option value="fortran">fortran</option>
-					<option value="mllike">mllike</option>
-					<option value="gas">gas</option>
-					<option value="gherkin">gherkin</option>
-					<option value="go">go</option>
-					<option value="groovy">groovy</option>
-					<option value="haml">haml</option>
-					<option value="handlebars">handlebars</option>
-					<option value="haskell">haskell</option>
-					<option value="haskell-literate">haskell-literate</option>
-					<option value="haxe">haxe</option>
-					<option value="htmlembedded">htmlembedded</option>
-					<option value="htmlmixed">htmlmixed</option>
-					<option value="http">http</option>
-					<option value="idl">idl</option>
-					<option value="javascript">javascript</option>
-					<option value="jsx">jsx</option>
-					<option value="jinja2">jinja2</option>
-					<option value="julia">julia</option>
-					<option value="livescript">livescript</option>
-					<option value="lua">lua</option>
-					<option value="markdown">markdown</option>
-					<option value="gfm">gfm</option>
-					<option value="mathematica">mathematica</option>
-					<option value="mbox">mbox</option>
-					<option value="mirc">mirc</option>
-					<option value="modelica">modelica</option>
-					<option value="mscgen">mscgen</option>
-					<option value="mumps">mumps</option>
-					<option value="nginx">nginx</option>
-					<option value="nsis">nsis</option>
-					<option value="ntriples">ntriples</option>
-					<option value="octave">octave</option>
-					<option value="oz">oz</option>
-					<option value="pascal">pascal</option>
-					<option value="pegjs">pegjs</option>
-					<option value="perl">perl</option>
-					<option value="asciiarmor">asciiarmor</option>
-					<option value="php">php</option>
-					<option value="pig">pig</option>
-					<option value="powershell">powershell</option>
-					<option value="properties">properties</option>
-					<option value="protobuf">protobuf</option>
-					<option value="pug">pug</option>
-					<option value="puppet">puppet</option>
-					<option value="python">python</option>
-					<option value="q">q</option>
-					<option value="r">r</option>
-					<option value="rpm">rpm</option>
-					<option value="rst">rst</option>
-					<option value="ruby">ruby</option>
-					<option value="rust">rust</option>
-					<option value="sas">sas</option>
-					<option value="sass">sass</option>
-					<option value="spreadsheet">spreadsheet</option>
-					<option value="scheme">scheme</option>
-					<option value="shell">shell</option>
-					<option value="sieve">sieve</option>
-					<option value="slim">slim</option>
-					<option value="smalltalk">smalltalk</option>
-					<option value="smarty">smarty</option>
-					<option value="solr">solr</option>
-					<option value="soy">soy</option>
-					<option value="stylus">stylus</option>
-					<option value="sql">sql</option>
-					<option value="sparql">sparql</option>
-					<option value="swift">swift</option>
-					<option value="stex">stex</option>
-					<option value="tcl">tcl</option>
-					<option value="textile">textile</option>
-					<option value="tiddlywiki">tiddlywiki</option>
-					<option value="tiki">tiki</option>
-					<option value="toml">toml</option>
-					<option value="tornado">tornado</option>
-					<option value="troff">troff</option>
-					<option value="ttcn">ttcn</option>
-					<option value="ttcn-cfg">ttcn-cfg</option>
-					<option value="turtle">turtle</option>
-					<option value="twig">twig</option>
-					<option value="vb">vb</option>
-					<option value="vbscript">vbscript</option>
-					<option value="velocity">velocity</option>
-					<option value="verilog">verilog</option>
-					<option value="vhdl">vhdl</option>
-					<option value="vue">vue</option>
-					<option value="webidl">webidl</option>
-					<option value="xml">xml</option>
-					<option value="xquery">xquery</option>
-					<option value="yacas">yacas</option>
-					<option value="yaml">yaml</option>
-					<option value="yaml-frontmatter">yaml-frontmatter</option>
-					<option value="z80">z80</option>
-				</select>
+                        <option value="abap">ABAP</option>
+                        <option value="apex">apex</option>
+                        <option value="azcli">azcli</option>
+                        <option value="bat">bat</option>
+                        <option value="cameligo">cameligo</option>
+                        <option value="clojure">clojure</option>
+                        <option value="coffee">coffee</option>
+                        <option value="cpp">cpp</option>
+                        <option value="csharp">csharp</option>
+                        <option value="csp">csp</option>
+                        <option value="css">css</option>
+                        <option value="dart">dart</option>
+                        <option value="dockerfile">dockerfile</option>
+                        <option value="fillers">fillers</option>
+                        <option value="fsharp">fsharp</option>
+                        <option value="go">go</option>
+                        <option value="graphql">graphql</option>
+                        <option value="handlebars">handlebars</option>
+                        <option value="hcl">hcl</option>
+                        <option value="html">html</option>
+                        <option value="ini">ini</option>
+                        <option value="java">java</option>
+                        <option value="javascript" selected="selected">javascript</option>
+                        <option value="julia">ejulialm</option>
+                        <option value="kotlin">kotlin</option>
+                        <option value="less">less</option>
+                        <option value="lexon">lexon</option>
+                        <option value="lua">lua</option>
+                        <option value="markdown">markdown</option>
+                        <option value="mips">mips</option>
+                        <option value="msdax">msdax</option>
+                        <option value="mysql">mysql</option>
+                        <option value="objective-c">objective-c</option>
+                        <option value="pascal">pascal</option>
+                        <option value="pascaligo">pascaligo</option>
+                        <option value="perl">perl</option>
+                        <option value="pgsqk">pgsqk</option>
+                        <option value="php">php</option>
+                        <option value="postiats">postiats</option>
+                        <option value="powerquery">powerquery</option>
+                        <option value="powershell">powershell</option>
+                        <option value="pug">pug</option>
+                        <option value="python">python</option>
+                        <option value="r">r</option>
+                        <option value="razor">razor</option>
+                        <option value="redis">redis</option>
+                        <option value="redshift">redshift</option>
+                        <option value="restructuredtext">restructuredtext</option>
+                        <option value="ruby">ruby</option>
+                        <option value="rust">rust</option>
+                        <option value="sb">sb</option>
+                        <option value="scala">scala</option>
+                        <option value="scheme">scheme</option>
+                        <option value="scss">scss</option>
+                        <option value="shell">shell</option>
+                        <option value="solidity">solidity</option>
+                        <option value="sophia">sophia</option>
+                        <option value="sql">sql</option>
+                        <option value="st">st</option>
+                        <option value="swift">swift</option>
+                        <option value="systemverilog">systemverilog</option>
+                        <option value="tcl">tcl</option>
+                        <option value="test">test</option>
+                        <option value="twig">twig</option>
+                        <option value="typescript">typescript</option>
+                        <option value="vb">vb</option>
+                        <option value="xml">xml</option>
+                        <option value="yaml">yaml</option>
+                    </select>
 				Theme
 				<select onchange="selectTheme()" id="theme">
-					<option>Choose Theme</option>
-					<option value="3024-day">3024-day</option>
-					<option value="3024-night">3024-night</option>
-					<option value="abcdef">abcdef</option>
-					<option value="ambiance">ambiance</option>
-					<option value="base16-dark">base16-dark</option>
-					<option value="base16-light">base16-light</option>
-					<option value="bespin">bespin</option>
-					<option value="blackboard">blackboard</option>
-					<option value="cobalt">cobalt</option>
-					<option value="colorforth">colorforth</option>
-					<option value="darcula">darcula</option>
-					<option value="dracula">dracula</option>
-					<option value="duotone-dark">duotone-dark</option>
-					<option value="duotone-light">duotone-light</option>
-					<option value="eclipse">eclipse</option>
-					<option value="elegant">elegant</option>
-					<option value="erlang-dark">erlang-dark</option>
-					<option value="gruvbox-dark">gruvbox-dark</option>
-					<option value="hopscotch">hopscotch</option>
-					<option value="icecoder">icecoder</option>
-					<option value="idea">idea</option>
-					<option value="isotope">isotope</option>
-					<option value="lesser-dark">lesser-dark</option>
-					<option value="liquibyte">liquibyte</option>
-					<option value="lucario">lucario</option>
-					<option value="material">material</option>
-					<option value="mbo">mbo</option>
-					<option value="mdn-like">mdn-like</option>
-					<option value="midnight">midnight</option>
-					<option value="monokai">monokai</option>
-					<option value="neat">neat</option>
-					<option value="neo">neo</option>
-					<option value="night">night</option>
-					<option value="nord">nord</option>
-					<option value="oceanic-next">oceanic-next</option>
-					<option value="panda-syntax">panda-syntax</option>
-					<option value="paraiso-dark">paraiso-dark</option>
-					<option value="paraiso-light">paraiso-light</option>
-					<option value="pastel-on-dark">pastel-on-dark</option>
-					<option value="railscasts">railscasts</option>
-					<option value="rubyblue">rubyblue</option>
-					<option value="seti">seti</option>
-					<option value="shadowfox">shadowfox</option>
-					<option value="the-matrix">the-matrix</option>
-					<option value="tomorrow-night-bright">tomorrow-night-bright</option>
-					<option value="tomorrow-night-eighties">tomorrow-night-eighties</option>
-					<option value="ttcn">ttcn</option>
-					<option value="twilight">twilight</option>
-					<option value="vibrant-ink">vibrant-ink</option>
-					<option value="xq-dark">xq-dark</option>
-					<option value="xq-light">xq-light</option>
-					<option value="yeti">yeti</option>
-					<option value="yonce">yonce</option>
-					<option value="zenburn">zenburn</option>
-				</select>
+                        <option value="vs">vs</option>
+                        <option value="vs-dark" selected="selected">vs-dark</option>
+                        <option value="Active4D">Active4D</option>
+                        <option value="All Hallows Eve">All Hallows Eve</option>
+                        <option value="Amy">Amy</option>
+                        <option value="Birds of Paradise">Birds of Paradise</option>
+                        <option value="Blackboard">Blackboard</option>
+                        <option value="Brilliance Black">Brilliance Black</option>
+                        <option value="BrillianceDull">Brilliance Dull</option>
+                        <option value="Chrome DevTools">Chrome DevTools</option>
+                        <option value="Clouds Midnight">Clouds Midnight</option>
+                        <option value="Clouds">Clouds</option>
+                        <option value="Cobalt">Cobalt</option>
+                        <option value="Dawn">Dawn</option>
+                        <option value="Dominion Day">Dominion Day</option>
+                        <option value="Dreamweaver">Dreamweaver</option>
+                        <option value="Eiffel">Eiffel</option>
+                        <option value="Espresso Libre">Espresso Libre</option>
+                        <option value="GitHub">GitHub</option>
+                        <option value="IDLE">IDLE</option>
+                        <option value="Katzenmilch">Katzenmilch</option>
+                        <option value="Kuroir Theme">Kuroir Theme</option>
+                        <option value="LAZY">LAZY</option>
+                        <option value="MagicWB (Amiga)">MagicWB (Amiga)</option>
+                        <option value="Merbivore Soft">Merbivore Soft</option>
+                        <option value="Merbivore">Merbivore</option>
+                        <option value="Monokai Bright">Monokai Bright</option>
+                        <option value="Monokai">Monokai</option>
+                        <option value="Night Owl">Night Owl</option>
+                        <option value="Oceanic Next">Oceanic Next</option>
+                        <option value="Pastels on Dark">Pastels on Dark</option>
+                        <option value="Slush and Poppies">Slush and Poppies</option>
+                        <option value="Solarized-dark">Solarized-dark</option>
+                        <option value="Solarized-light">Solarized-light</option>
+                        <option value="SpaceCadet">SpaceCadet</option>
+                        <option value="Sunburst">Sunburst</option>
+                        <option value="Textmate (Mac Classic)">Textmate (Mac Classic)</option>
+                        <option value="Tomorrow-Night-Blue">Tomorrow-Night-Blue</option>
+                        <option value="Tomorrow-Night-Bright">Tomorrow-Night-Bright</option>
+                        <option value="Tomorrow-Night-Eighties">Tomorrow-Night-Eighties</option>
+                        <option value="Tomorrow-Night">Tomorrow-Night</option>
+                        <option value="Tomorrow">Tomorrow</option>
+                        <option value="Twilight">Twilight</option>
+                        <option value="Upstream Sunburst">Upstream Sunburst</option>
+                        <option value="Vibrant Ink">Vibrant Ink</option>
+                        <option value="Xcode_default">Xcode_default</option>
+                        <option value="Zenburnesque">Zenburnesque</option>
+                        <option value="iPlastic">iPlastic</option>
+                        <option value="idleFingers">idleFingers</option>
+                        <option value="krTheme">krTheme</option>
+                        <option value="monoindustrial">monoindustrial</option>
+                        <option value="themelist">themelist</option>
+                    </select>
 					Indent Unit
 				<select onchange="selectIndentUnit()" id="indentUnit">
+                        <option value="1">1</option>
+                        <option value="2" selected="selected">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                    </select>
 
-					<option>?</option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-					<option value="6">6</option>
-					<option value="7">7</option>
-					<option value="8">8</option>
-				</select>
-
-				<button onclick="execute()" id="execute">Execute</button>
-			</div>
-			<div id="firepad"></div>
-		</div>
-		<script>
-			function init() {
+                    <button onclick="execute()" id="execute">Execute</button>
+                </div>
+                <div id="firepad"></div>
+            </div>
+            <script>
+                function init() {
 				//// Initialize Firebase.
 				var config = {
-					apiKey: "AIzaSyAzkdZJNCMca5u0wBAxIejM8CA-umIJhzc",
+                    apiKey: "AIzaSyAzkdZJNCMca5u0wBAxIejM8CA-umIJhzc",
 					projectId: "code-jacebenson-com.firebaseapp.com",
 					databaseURL: "https://code-jacebenson-com.firebaseio.com"
 				};
@@ -273,15 +215,43 @@
 
 				//// Create Monaco and firepad.
 				require.config({
-					paths: {
-						'vs': '../monaco-editor/vs'
+                    paths: {
+                    'vs': '../monaco-editor/vs'
 					}
 				});
 				require(['vs/editor/editor.main'], function () {
-					editor = monaco
-						.editor
-						.create(document.getElementById('firepad'), {language: 'javascript'});
-					Firepad.fromMonaco(firepadRef, editor);
+                    window.editor = monaco
+                        .editor
+                        .create(document.getElementById('firepad'), {
+                            language: document.getElementById('lang').value || 'javascript',
+                            theme: document.getElementById('theme').value || 'vs-dark',
+							tabSize: parseInt(document.getElementById('indentUnit').value,10) || 2,
+                        });
+					Firepad.fromMonaco(firepadRef, window.editor);
+					(function setValues(){
+					var lang = document.getElementById('lang').value;
+					var theme = document.getElementById('theme').value;
+					var indentUnit = parseInt(document.getElementById('indentUnit').value,10);
+					
+					var url = new URL(window.location.href);
+					let params = new URLSearchParams(url.search);
+					var props = {
+						lang: params.get('lang'),
+						theme: decodeURIComponent(params.get('theme')),
+						indent: params.get('indent'),
+					}
+					console.log(props);
+					if(props.lang){
+						document.getElementById('lang').value = props.lang;
+					}
+					if(props.theme){
+						document.getElementById('theme').value = props.theme;
+						selectTheme()
+					}
+					if(props.indent){
+						document.getElementById('indentUnit').value = props.indent;
+					}
+				})()
 				});
 
 				// Helper to get hash from end of URL or generate a random one.
@@ -294,7 +264,7 @@
 						.searchParams
 						.get('id');
 					if (hash !== null) {
-						ref = ref.child(hash);
+                    ref = ref.child(hash);
 					} else {
 						//ref = ref.push();  generate unique location.
 						var d = new Date();
@@ -311,21 +281,59 @@
 							.pushState('page2', 'Title', url.href);
 					}
 					if (typeof console !== 'undefined') {
-						//console.log('Firebase data: ', ref.toString());
-					}
+                    //console.log('Firebase data: ', ref.toString());
+                }
 					return ref;
 				}
+				
 
 			}
 			function execute() {
-				console.log('%cRunning code... ', 'background: #222; color: #bada55');
+                    console.log('%cRunning code... ', 'background: #222; color: #bada55');
 				try {
-					eval(window.codeMirror.getValue());
+                    eval(window.editor.getValue());
+					console.log('%Done', 'background: #222; color: #bada55');
 				} catch (e) {
-					console.log('Error', e);
+                    console.log('Error', e);
 				}
-
+			}
+			function selectLang() {
+				var lang = document.getElementById('lang').value;
+				var url = new URL(window.location.href);
+				var urlParams = url.searchParams.set('lang',lang);
+	            window.history.pushState({}, "Lang=" + lang, url.pathname + url.search); 
+				monaco.editor.setModelLanguage(window.editor.getModel(), lang);
+				console.log(`Model language was changed to ${window.editor.getModel().getLanguageIdentifier().language}`);
+			}
+			function selectTheme() {
+				var theme = document.getElementById('theme').value;
+				var url = new URL(window.location.href);
+				var urlParams = url.searchParams.set('theme',encodeURIComponent(theme));
+	            window.history.pushState({}, "Theme=" + theme, url.pathname + url.search); 
+				theme = theme.replace(/[\s\(\)_]/g,'');
+				
+				
+				if (theme === 'vs' || theme === 'vs-dark') {
+                    monaco.editor.setTheme(theme);
+					console.log(`Theme changed to ${theme}`);
+				} else {
+                    //console.log('trying to load theme', 'http://localhost:8888/monaco-editor/themes/' + theme + '.json')
+                    fetch('/monaco-editor/themes/' + theme + '.json')
+                        .then(data => data.json())
+                        .then(data => {
+                            monaco.editor.defineTheme(theme, data);
+                            monaco.editor.setTheme(theme);
+                            console.log(`Theme changed to ${theme}`);
+                        })
+                }
+			}
+			function selectIndentUnit(){
+				var indentUnit = parseInt(document.getElementById('indentUnit').value,10)
+				var url = new URL(window.location.href);
+				var urlParams = url.searchParams.set('indent',indentUnit);
+	            window.history.pushState({}, "Indent=" + indentUnit, url.pathname + url.search); 
+				window.editor.getModel().updateOptions({tabSize: indentUnit});
 			}
 		</script>
-	</body>
-</html>
+        </body>
+    </html>
