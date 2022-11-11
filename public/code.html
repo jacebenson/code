@@ -1,81 +1,353 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://s3.amazonaws.com/stitch-sdks/js/bundles/4.3.0/stitch.js"></script>
-    <script src="js/marvel-user.js"></script>
-    <!--Bootstrap-->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!--Font Awesome-->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <!-- CodeMirror and its JavaScript mode file -->
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/mode/javascript/javascript.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.17.0/codemirror.css" />
-    <script src="js/code.js"></script>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <style>
+        #container,
+        body,
+        html {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
 
-    <link rel="stylesheet" href="//codemirror.net/lib/codemirror.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/3024-day.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/3024-night.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/ambiance.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/base16-dark.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/base16-light.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/blackboard.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/cobalt.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/eclipse.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/elegant.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/erlang-dark.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/lesser-dark.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/midnight.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/monokai.css">
-    <link rel="stylesheet" href="//codemirror.net/theme/neat.css">
-    <script>
-    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-    lineNumbers: true,
-    styleActiveLine: true,
-    matchBrackets: true
-  });
-  </script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script>
+    <!-- Firepad -->
+    <link rel="stylesheet" href="//unpkg.com/firepad@latest/dist/firepad.css" />
+    <script src="//unpkg.com/firepad@latest/dist/firepad.min.js"></script>
+
+    <!--loader.js-->
+
+    <script src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"></script>
+    <!-- User List and random names-->
+
+    <script src="js/firepad-userlist.js"></script>
+    <script src="js/characters.js"></script>
+    <link rel="stylesheet" href="css/firepad-userlist.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script async defer data-website-id="7050ad1a-2731-4fa2-91f1-e3f5aee20a70"
+        src="https://monitoring.jace.pro/minneapolis.js"></script>
 </head>
 
-<body onload="initUser(marvelUsers.randomUser())">
-    <!-- responsive equal width cols, can be sm, md, lg, or xl -->
-    <div class="container">
-        <div class="row">
-            <div class="col-sm">1 of 3</div>
-            <div class="col-sm">1 of 3</div>
-            <div class="col-sm">1 of 3</div>
+<body onload="init()">
+    <div id="container">
+        <div id="userlist"></div>
+        <div id="lang-and-theme">
+            Language
+            <select onchange="selectLang()" id="lang">
+                <option value="abap">ABAP</option>
+                <option value="apex">apex</option>
+                <option value="azcli">azcli</option>
+                <option value="bat">bat</option>
+                <option value="cameligo">cameligo</option>
+                <option value="clojure">clojure</option>
+                <option value="coffee">coffee</option>
+                <option value="cpp">cpp</option>
+                <option value="csharp">csharp</option>
+                <option value="csp">csp</option>
+                <option value="css">css</option>
+                <option value="dart">dart</option>
+                <option value="dockerfile">dockerfile</option>
+                <option value="fillers">fillers</option>
+                <option value="fsharp">fsharp</option>
+                <option value="go">go</option>
+                <option value="graphql">graphql</option>
+                <option value="handlebars">handlebars</option>
+                <option value="hcl">hcl</option>
+                <option value="html">html</option>
+                <option value="ini">ini</option>
+                <option value="java">java</option>
+                <option value="javascript" selected="selected">javascript</option>
+                <option value="julia">ejulialm</option>
+                <option value="kotlin">kotlin</option>
+                <option value="less">less</option>
+                <option value="lexon">lexon</option>
+                <option value="lua">lua</option>
+                <option value="markdown">markdown</option>
+                <option value="mips">mips</option>
+                <option value="msdax">msdax</option>
+                <option value="mysql">mysql</option>
+                <option value="objective-c">objective-c</option>
+                <option value="pascal">pascal</option>
+                <option value="pascaligo">pascaligo</option>
+                <option value="perl">perl</option>
+                <option value="pgsqk">pgsqk</option>
+                <option value="php">php</option>
+                <option value="postiats">postiats</option>
+                <option value="powerquery">powerquery</option>
+                <option value="powershell">powershell</option>
+                <option value="pug">pug</option>
+                <option value="python">python</option>
+                <option value="r">r</option>
+                <option value="razor">razor</option>
+                <option value="redis">redis</option>
+                <option value="redshift">redshift</option>
+                <option value="restructuredtext">restructuredtext</option>
+                <option value="ruby">ruby</option>
+                <option value="rust">rust</option>
+                <option value="sb">sb</option>
+                <option value="scala">scala</option>
+                <option value="scheme">scheme</option>
+                <option value="scss">scss</option>
+                <option value="shell">shell</option>
+                <option value="solidity">solidity</option>
+                <option value="sophia">sophia</option>
+                <option value="sql">sql</option>
+                <option value="st">st</option>
+                <option value="swift">swift</option>
+                <option value="systemverilog">systemverilog</option>
+                <option value="tcl">tcl</option>
+                <option value="test">test</option>
+                <option value="twig">twig</option>
+                <option value="typescript">typescript</option>
+                <option value="vb">vb</option>
+                <option value="xml">xml</option>
+                <option value="yaml">yaml</option>
+            </select>
+            Theme
+            <select onchange="selectTheme()" id="theme">
+                <option value="vs">vs</option>
+                <option value="vs-dark" selected="selected">vs-dark</option>
+                <option value="Active4D">Active4D</option>
+                <option value="All Hallows Eve">All Hallows Eve</option>
+                <option value="Amy">Amy</option>
+                <option value="Birds of Paradise">Birds of Paradise</option>
+                <option value="Blackboard">Blackboard</option>
+                <option value="Brilliance Black">Brilliance Black</option>
+                <option value="BrillianceDull">Brilliance Dull</option>
+                <option value="Chrome DevTools">Chrome DevTools</option>
+                <option value="Clouds Midnight">Clouds Midnight</option>
+                <option value="Clouds">Clouds</option>
+                <option value="Cobalt">Cobalt</option>
+                <option value="Dawn">Dawn</option>
+                <option value="Dominion Day">Dominion Day</option>
+                <option value="Dreamweaver">Dreamweaver</option>
+                <option value="Eiffel">Eiffel</option>
+                <option value="Espresso Libre">Espresso Libre</option>
+                <option value="GitHub">GitHub</option>
+                <option value="IDLE">IDLE</option>
+                <option value="Katzenmilch">Katzenmilch</option>
+                <option value="Kuroir Theme">Kuroir Theme</option>
+                <option value="LAZY">LAZY</option>
+                <option value="MagicWB (Amiga)">MagicWB (Amiga)</option>
+                <option value="Merbivore Soft">Merbivore Soft</option>
+                <option value="Merbivore">Merbivore</option>
+                <option value="Monokai Bright">Monokai Bright</option>
+                <option value="Monokai">Monokai</option>
+                <option value="Night Owl">Night Owl</option>
+                <option value="Oceanic Next">Oceanic Next</option>
+                <option value="Pastels on Dark">Pastels on Dark</option>
+                <option value="Slush and Poppies">Slush and Poppies</option>
+                <option value="Solarized-dark">Solarized-dark</option>
+                <option value="Solarized-light">Solarized-light</option>
+                <option value="SpaceCadet">SpaceCadet</option>
+                <option value="Sunburst">Sunburst</option>
+                <option value="Textmate (Mac Classic)">Textmate (Mac Classic)</option>
+                <option value="Tomorrow-Night-Blue">Tomorrow-Night-Blue</option>
+                <option value="Tomorrow-Night-Bright">Tomorrow-Night-Bright</option>
+                <option value="Tomorrow-Night-Eighties">Tomorrow-Night-Eighties</option>
+                <option value="Tomorrow-Night">Tomorrow-Night</option>
+                <option value="Tomorrow">Tomorrow</option>
+                <option value="Twilight">Twilight</option>
+                <option value="Upstream Sunburst">Upstream Sunburst</option>
+                <option value="Vibrant Ink">Vibrant Ink</option>
+                <option value="Xcode_default">Xcode_default</option>
+                <option value="Zenburnesque">Zenburnesque</option>
+                <option value="iPlastic">iPlastic</option>
+                <option value="idleFingers">idleFingers</option>
+                <option value="krTheme">krTheme</option>
+                <option value="monoindustrial">monoindustrial</option>
+                <option value="themelist">themelist</option>
+            </select>
+            Indent Unit
+            <select onchange="selectIndentUnit()" id="indentUnit">
+                <option value="1">1</option>
+                <option value="2" selected="selected">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+            </select>
+
+            <button onclick="execute()" id="execute">Execute</button>
         </div>
+        <div id="firepad"></div>
     </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-2">
-                <div id="userlist" class="container">
-                    <div id="me" class="row">Online(<span id="onlineCount">0</span>)</div>
-                    <div class="row">
-                        <input id="myName" type="text" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-10">
-                <div id="editor" class="container">
-                    <div class="row" id="editor-ln1">test....
-                    </div>
-                    <div class="row">
-                        <textarea 
-                            id="code" 
-                            onchange="updateSnippet()" 
-                            class="form-control" 
-                            rows="5" 
-                            ></textarea>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <script>
+        function init() {
+            //// Initialize Firebase.
+            var config = {
+                apiKey: "AIzaSyAzkdZJNCMca5u0wBAxIejM8CA-umIJhzc",
+                projectId: "code-jacebenson-com.firebaseapp.com",
+                databaseURL: "https://code-jacebenson-com.firebaseio.com"
+            };
+            firebase.initializeApp(config);
+
+            //// Get Firebase Database reference.
+            var firepadRef = getExampleRef();
+
+            //// Create Monaco and firepad.
+            require.config({
+                paths: {
+                    'vs': '../monaco-editor/vs'
+                }
+            });
+            require(['vs/editor/editor.main'], function () {
+                window.editor = monaco
+                    .editor
+                    .create(document.getElementById('firepad'), {
+                        language: document.getElementById('lang').value || 'javascript',
+                        theme: document.getElementById('theme').value || 'vs-dark',
+                        tabSize: parseInt(document.getElementById('indentUnit').value, 10) || 2,
+                    });
+
+                // Create a random ID to use as our user ID (we must give this to firepad and FirepadUserList).
+                var userId = Math.floor(Math.random() * 9999999999).toString();
+                var randomUser = characters.randomUser();
+                var defaultText = [];
+                defaultText = defaultText.join('\n');
+                var firepad = Firepad.fromMonaco(firepadRef, window.editor, {
+                    defaultText: defaultText,
+                    userId: userId
+                });
+
+                //// Create FirepadUserList (with our desired userId).
+                var firepadUserList = FirepadUserList.fromDiv(firepadRef.child('users'),
+                    document.getElementById('userlist'), userId, randomUser);
+
+                //// Initialize contents.
+                firepad.on('ready', function () {
+                    if (firepad.isHistoryEmpty()) {
+                        // firepad.setText('Check out the user list to the left!');
+                    }
+                });
+
+                //	Firepad.fromMonaco(firepadRef, window.editor);
+                (function setValues() {
+                    var lang = document.getElementById('lang').value;
+                    var theme = document.getElementById('theme').value || 'vs-dark';
+                    var indentUnit = parseInt(document.getElementById('indentUnit').value, 10);
+
+                    var url = new URL(window.location.href);
+                    let params = new URLSearchParams(url.search);
+                    if (params.get('lang') || params.get('theme') || params.get('indent')) {
+                        var props = {
+                            lang: params.get('lang'),
+                            theme: decodeURIComponent(params.get('theme')),
+                            indent: params.get('indent'),
+                        }
+                        console.log(props);
+                        if (props.lang) {
+                            document.getElementById('lang').value = props.lang;
+                        }
+                        if (props.theme) {
+                            if (props.theme == "null") { props.theme = "vs-dark" }
+                            console.log('trying to set theme to', props.theme);
+                            //if(props.theme == ""){props.theme="vs-dark"}
+                            document.getElementById('theme').value = props.theme;
+                            selectTheme()
+                        }
+                        if (props.indent) {
+                            document.getElementById('indentUnit').value = props.indent;
+                        }
+                    }
+                })()
+            });
+
+            // Helper to get hash from end of URL or generate a random one.
+            function getExampleRef() {
+                var url = new URL(window.location.href);
+                var ref = firebase
+                    .database()
+                    .ref();
+                var hash = url
+                    .searchParams
+                    .get('id');
+                var newHash = url.pathname.split('/')[1];
+                var eitherHash = hash || newHash
+                if (hash !== null) {
+                    ref = ref.child(eitherHash);
+                } else {
+                    //ref = ref.push();  generate unique location.
+                    var d = new Date();
+                    d = d
+                        .toISOString()
+                        .split('.')[0]
+                        .replace(/\:/gi, '-');
+                    ref = ref.child(d);
+                    url
+                        .searchParams
+                        .set('id', ref.key);
+                    window
+                        .history
+                        .pushState('page2', 'Title', url.href);
+                }
+                if (typeof console !== 'undefined') {
+                    //console.log('Firebase data: ', ref.toString());
+                }
+                return ref;
+            }
+
+
+        }
+        function execute() {
+            console.log('%cRunning code... ', 'background: #222; color: #bada55');
+            try {
+                eval(window.editor.getValue());
+                console.log('%cDone', 'background: #222; color: #bada55');
+            } catch (e) {
+                console.log('Error', e);
+            }
+        }
+        function selectLang() {
+            var lang = document.getElementById('lang').value;
+            var url = new URL(window.location.href);
+            var urlParams = url.searchParams.set('lang', lang);
+            window.history.pushState({}, "Lang=" + lang, url.pathname + url.search);
+            monaco.editor.setModelLanguage(window.editor.getModel(), lang);
+            console.log(`Model language was changed to ${window.editor.getModel().getLanguageIdentifier().language}`);
+        }
+        function selectTheme() {
+            var theme = document.getElementById('theme').value;
+
+            var url = new URL(window.location.href);
+            var urlParams = url.searchParams.set('theme', encodeURIComponent(theme));
+            window.history.pushState({}, "Theme=" + theme, url.pathname + url.search);
+            theme = theme.replace(/[\s\(\)_]/g, '');
+            console.log("theme", theme, typeof theme)
+            if (theme === 'vs' || theme === 'vs-dark') {
+                monaco.editor.setTheme(theme);
+                console.log(`Theme changed to ${theme}`);
+            } else if (theme === "" || theme === "null") {
+            } else {
+                //console.log('trying to load theme', 'http://localhost:8888/monaco-editor/themes/' + theme + '.json')
+                fetch('/monaco-editor/themes/' + theme + '.json')
+                    .then(data => data.json())
+                    .then(data => {
+                        monaco.editor.defineTheme(theme, data);
+                        monaco.editor.setTheme(theme);
+                        console.log(`Theme changed to ${theme}`);
+                    })
+            }
+        }
+        function selectIndentUnit() {
+            var indentUnit = parseInt(document.getElementById('indentUnit').value, 10)
+            var url = new URL(window.location.href);
+            var urlParams = url.searchParams.set('indent', indentUnit);
+            window.history.pushState({}, "Indent=" + indentUnit, url.pathname + url.search);
+            window.editor.getModel().updateOptions({ tabSize: indentUnit });
+        }
+    </script>
 </body>
 
 </html>
