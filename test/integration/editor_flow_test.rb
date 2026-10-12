@@ -30,6 +30,22 @@ class EditorFlowTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "/monaco-editor/vs/loader.js"
   end
 
+  test "every theme the picker offers has a vendored definition" do
+    get "/theme-room"
+
+    assert_response :success
+    block = response.body[/id="theme".*?<\/select>/m]
+    values = block.scan(/<option value="([^"]+)"/).flatten
+
+    assert_operator values.size, :>, 2, "the picker should offer more than the built in themes"
+    values.each do |value|
+      next if %w[vs vs-dark].include?(value)
+
+      assert_path_exists Rails.root.join("public/monaco-editor/themes", "#{value}.json"),
+        "theme #{value} is offered but has no definition file"
+    end
+  end
+
   test "the editor page has no hosted realtime dependency left in it" do
     get "/room-one"
 

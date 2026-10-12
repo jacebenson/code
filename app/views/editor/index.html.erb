@@ -41,13 +41,11 @@
         </label>
 
         <label>Theme
+          <%# Built from the vendored definitions, so the picker cannot offer a
+              theme that has no file behind it. Names are the file basenames. %>
+          <% themes = ["vs", "vs-dark"] + Dir.children(Rails.root.join("public/monaco-editor/themes")).sort.map { |file| File.basename(file, ".json") } %>
           <select onchange="selectTheme()" id="theme">
-            <% %w[vs vs-dark Active4D Amy Blackboard Cobalt Dawn Dreamweaver Eiffel GitHub
-                  IDLE Katzenmilch Kuroir\ Theme LAZY Merbivore Merbivore\ Soft Monokai
-                  Night\ Owl Oceanic\ Next Pastels\ on\ Dark Solarized-dark Solarized-light
-                  SpaceCadet Sunburst Tomorrow Tomorrow-Night Tomorrow-Night-Blue
-                  Tomorrow-Night-Bright Tomorrow-Night-Eighties Twilight Vibrant\ Ink Zenburnesque
-                  iPlastic idleFingers krTheme monoindustrial].each do |theme| %>
+            <% themes.each do |theme| %>
               <option value="<%= theme %>" <%= "selected" if theme == "vs-dark" %>><%= theme %></option>
             <% end %>
           </select>
@@ -74,10 +72,34 @@
       remember();
     }
 
+    // Themes other than vs/vs-dark are JSON files vendored under
+    // /monaco-editor/themes, named with spaces, parens and underscores removed.
+    // They have to be defined before setTheme or before creating the editor,
+    // otherwise Monaco keeps its default light theme.
+    function themeId(name) {
+      return String(name || "").replace(/[\s()_]/g, "");
+    }
+
+    function loadTheme(name) {
+      var id = themeId(name);
+      if (!id || id === "null") return Promise.resolve("vs-dark");
+      if (id === "vs" || id === "vs-dark") return Promise.resolve(id);
+      return fetch("/monaco-editor/themes/" + id + ".json")
+        .then(function (response) {
+          if (!response.ok) throw new Error("no theme " + id);
+          return response.json();
+        })
+        .then(function (data) {
+          monaco.editor.defineTheme(id, data);
+          return id;
+        });
+    }
+
     function selectTheme() {
-      var value = document.getElementById("theme").value;
-      if (window.monaco) window.monaco.editor.setTheme(value);
       remember();
+      loadTheme(document.getElementById("theme").value)
+        .then(function (id) { monaco.editor.setTheme(id); })
+        .catch(function () { /* unknown name in the list: keep the current theme */ });
     }
 
     function selectIndentUnit() {
@@ -117,30 +139,38 @@
       restore();
       require.config({ paths: { vs: "/monaco-editor/vs" } });
       require(["vs/editor/editor.main"], function () {
-        window.editor = monaco.editor.create(document.getElementById("editor"), {
-          language: document.getElementById("lang").value,
-          theme: document.getElementById("theme").value,
-          tabSize: parseInt(document.getElementById("indentUnit").value, 10),
-          automaticLayout: true,
-          value: ""
-        });
+        // The theme has to exist before the editor is created, or the editor
+        // opens in the default light theme and the chosen one never applies.
+        loadTheme(document.getElementById("theme").value)
+          .then(function (theme) { start(theme); })
+          .catch(function () { start("vs-dark"); });
+      });
+    }
 
-        import("/js/collab.bundle.js?v=<%= asset_version %>").then(function (mod) {
-          var socket = (location.protocol === "https:" ? "wss:" : "ws:") + "//" + location.host + "/signal";
-          window.collab = mod.attachCollab({
-            editor: window.editor,
-            room: ROOM,
-            signaling: [socket],
-            userlist: document.getElementById("userlist"),
-            nameInput: document.getElementById("display-name"),
-            onStatus: function (status) {
-              window.__status = status;
-              var peers = status.peers === 1 ? "1 person" : status.peers + " people";
-              document.getElementById("status").textContent = peers + (status.connected ? " · connected" : " · offline");
-            }
-          });
-          window.__ready = true;
+    function start(theme) {
+      window.editor = monaco.editor.create(document.getElementById("editor"), {
+        language: document.getElementById("lang").value,
+        theme: theme,
+        tabSize: parseInt(document.getElementById("indentUnit").value, 10),
+        automaticLayout: true,
+        value: ""
+      });
+
+      import("/js/collab.bundle.js?v=<%= asset_version %>").then(function (mod) {
+        var socket = (location.protocol === "https:" ? "wss:" : "ws:") + "//" + location.host + "/signal";
+        window.collab = mod.attachCollab({
+          editor: window.editor,
+          room: ROOM,
+          signaling: [socket],
+          userlist: document.getElementById("userlist"),
+          nameInput: document.getElementById("display-name"),
+          onStatus: function (status) {
+            window.__status = status;
+            var peers = status.peers === 1 ? "1 person" : status.peers + " people";
+            document.getElementById("status").textContent = peers + (status.connected ? " · connected" : " · offline");
+          }
         });
+        window.__ready = true;
       });
     }
 

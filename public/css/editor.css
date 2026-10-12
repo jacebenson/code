@@ -13,6 +13,8 @@
 html, body {
   margin: 0;
   height: 100%;
+  /* The editor scrolls its own content. A page scrollbar next to it is noise. */
+  overflow: hidden;
   background: var(--paper);
   color: var(--ink);
   font: 13px/1.4 system-ui, -apple-system, sans-serif;
@@ -47,8 +49,8 @@ button {
 
 button:hover { border-color: var(--accent); color: var(--accent); }
 
-#container { display: flex; flex: 1; min-height: 0; }
-main { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+#container { display: flex; flex: 1; min-height: 0; overflow: hidden; }
+main { display: flex; flex-direction: column; flex: 1; min-width: 0; min-height: 0; overflow: hidden; }
 
 #controls {
   display: flex;
@@ -71,7 +73,7 @@ select {
   font: 11px monospace;
 }
 
-#editor { flex: 1; min-height: 240px; }
+#editor { flex: 1; min-height: 0; overflow: hidden; }
 
 .name-field {
   display: flex;
