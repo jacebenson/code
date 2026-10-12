@@ -86,3 +86,15 @@ typings/
 
 # Local Netlify folder
 .netlify
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+
+
+# Rails runtime output
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+/storage/*
+!/storage/.keep

@@ -1,8 +1,0 @@
-# These rules will change if you change your site’s custom domains or HTTPS settings
-
-
-
-# Redirect id to page
-
-# /code/* id=:id /test/:id/ 200!
-/*    /index.html   200

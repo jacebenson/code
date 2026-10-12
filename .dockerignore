@@ -1,0 +1,13 @@
+.git
+.gitignore
+.github
+node_modules
+vendor/bundle
+tmp/*
+log/*
+storage/*
+test
+README.md
+netlify.toml
+Dockerfile
+.dockerignore

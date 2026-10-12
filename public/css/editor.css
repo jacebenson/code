@@ -1,0 +1,109 @@
+:root {
+  --ink: #f4f1ea;
+  --paper: #121212;
+  --paper2: #1c1c1c;
+  --line: #333;
+  --muted: #a09a90;
+  --accent: #f4b400;
+  --red: #ff7b6d;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--paper);
+  color: var(--ink);
+  font: 13px/1.4 system-ui, -apple-system, sans-serif;
+}
+
+body { display: flex; flex-direction: column; }
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.brand { font: 700 13px monospace; letter-spacing: -0.02em; }
+.brand span { color: var(--red); }
+.room { color: var(--muted); }
+.room code { color: var(--ink); }
+.status { margin-left: auto; color: var(--muted); font: 11px monospace; }
+
+button {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 4px 8px;
+  font: 11px monospace;
+  cursor: pointer;
+}
+
+button:hover { border-color: var(--accent); color: var(--accent); }
+
+#container { display: flex; flex: 1; min-height: 0; }
+main { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+
+#controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+#controls label { display: flex; align-items: center; gap: 6px; }
+
+select {
+  background: var(--paper2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 3px 6px;
+  font: 11px monospace;
+}
+
+#editor { flex: 1; min-height: 240px; }
+
+.name-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.name-field input {
+  background: var(--paper2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 3px 6px;
+  font: 11px monospace;
+  width: 150px;
+}
+
+.name-field input:focus { outline: 1px solid var(--accent); }
+
+#userlist {
+  width: 160px;
+  border-right: 1px solid var(--line);
+  padding: 10px;
+  font: 11px monospace;
+  color: var(--muted);
+  overflow-y: auto;
+}
+
+#userlist .user { padding: 3px 0; }
+#userlist .user:before { content: "• "; color: var(--accent); }
+
+@media (max-width: 720px) {
+  #userlist { display: none; }
+}
