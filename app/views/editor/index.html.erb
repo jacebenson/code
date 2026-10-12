@@ -1,0 +1,143 @@
+<%# The edit page for one collaboration room. Layout is disabled: this page is a
+    full application shell, not part of a site chrome. %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>code.jace.pro · room <%= @room %></title>
+  <link rel="stylesheet" href="/css/editor.css" />
+  <script src="/monaco-editor/vs/loader.js"></script>
+</head>
+<body data-room="<%= @room %>">
+  <header>
+    <span class="brand">code<span>.jace.pro</span></span>
+    <span class="room" id="room">room <code><%= @room %></code></span>
+    <button type="button" id="copy-link">Copy link</button>
+    <span class="status" id="status">connecting</span>
+  </header>
+
+  <div id="container">
+    <aside id="userlist" aria-label="People in this room"></aside>
+    <main>
+      <div id="controls">
+        <label>Language
+          <select onchange="selectLang()" id="lang">
+            <% %w[abap apex azcli bat csharp cpp css dart dockerfile elixir fsharp go graphql
+                  handlebars hcl html ini java javascript julia kotlin less lua markdown mysql
+                  objective-c pascal perl php pgsql powershell pug python r ruby rust sass
+                  scala scheme scss shell solidity sql swift typescript vb xml yaml].each do |language| %>
+              <option value="<%= language %>" <%= "selected" if language == "javascript" %>><%= language %></option>
+            <% end %>
+          </select>
+        </label>
+
+        <label>Theme
+          <select onchange="selectTheme()" id="theme">
+            <% %w[vs vs-dark Active4D Amy Blackboard Cobalt Dawn Dreamweaver Eiffel GitHub
+                  IDLE Katzenmilch Kuroir\ Theme LAZY Merbivore Merbivore\ Soft Monokai
+                  Night\ Owl Oceanic\ Next Pastels\ on\ Dark Solarized-dark Solarized-light
+                  SpaceCadet Sunburst Tomorrow Tomorrow-Night Tomorrow-Night-Blue
+                  Tomorrow-Night-Bright Tomorrow-Night-Eighties Twilight Vibrant\ Ink Zenburnesque
+                  iPlastic idleFingers krTheme monoindustrial].each do |theme| %>
+              <option value="<%= theme %>" <%= "selected" if theme == "vs-dark" %>><%= theme %></option>
+            <% end %>
+          </select>
+        </label>
+
+        <label>Indent
+          <select onchange="selectIndentUnit()" id="indentUnit">
+            <% (1..8).each do |unit| %>
+              <option value="<%= unit %>" <%= "selected" if unit == 2 %>><%= unit %></option>
+            <% end %>
+          </select>
+        </label>
+      </div>
+      <div id="editor"></div>
+    </main>
+  </div>
+
+  <script>
+    var ROOM = document.body.dataset.room;
+
+    function selectLang() {
+      var value = document.getElementById("lang").value;
+      if (window.monaco && window.editor) window.monaco.editor.setModelLanguage(window.editor.getModel(), value);
+      remember();
+    }
+
+    function selectTheme() {
+      var value = document.getElementById("theme").value;
+      if (window.monaco) window.monaco.editor.setTheme(value);
+      remember();
+    }
+
+    function selectIndentUnit() {
+      var value = parseInt(document.getElementById("indentUnit").value, 10);
+      if (window.editor) window.editor.getModel().updateOptions({ tabSize: value });
+      remember();
+    }
+
+    function remember() {
+      try {
+        localStorage.setItem("code.jace.pro:prefs", JSON.stringify({
+          lang: document.getElementById("lang").value,
+          theme: document.getElementById("theme").value,
+          indent: document.getElementById("indentUnit").value
+        }));
+      } catch (_) {}
+    }
+
+    function restore() {
+      try {
+        var prefs = JSON.parse(localStorage.getItem("code.jace.pro:prefs") || "{}");
+        if (prefs.lang) document.getElementById("lang").value = prefs.lang;
+        if (prefs.theme) document.getElementById("theme").value = prefs.theme;
+        if (prefs.indent) document.getElementById("indentUnit").value = prefs.indent;
+      } catch (_) {}
+    }
+
+    document.getElementById("copy-link").addEventListener("click", function () {
+      navigator.clipboard.writeText(location.href).then(function () {
+        var button = document.getElementById("copy-link");
+        button.textContent = "Copied";
+        setTimeout(function () { button.textContent = "Copy link"; }, 1500);
+      });
+    });
+
+    function init() {
+      restore();
+      require.config({ paths: { vs: "/monaco-editor/vs" } });
+      require(["vs/editor/editor.main"], function () {
+        window.editor = monaco.editor.create(document.getElementById("editor"), {
+          language: document.getElementById("lang").value,
+          theme: document.getElementById("theme").value,
+          tabSize: parseInt(document.getElementById("indentUnit").value, 10),
+          automaticLayout: true,
+          value: ""
+        });
+
+        import("/js/collab.bundle.js").then(function (mod) {
+          var socket = (location.protocol === "https:" ? "wss:" : "ws:") + "//" + location.host + "/signal";
+          window.collab = mod.attachCollab({
+            editor: window.editor,
+            room: ROOM,
+            signaling: [socket],
+            userlist: document.getElementById("userlist"),
+            onStatus: function (status) {
+              window.__status = status;
+              var peers = status.peers === 1 ? "1 person" : status.peers + " people";
+              document.getElementById("status").textContent = peers + (status.connected ? " · connected" : " · offline");
+            }
+          });
+          window.__ready = true;
+        });
+      });
+    }
+
+    init();
+  </script>
+  <script src="/js/webmcp.js?v=2" defer></script>
+</body>
+</html>
