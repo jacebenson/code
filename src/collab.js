@@ -61,6 +61,10 @@ const renderUsers = (container, awareness) => {
 export function attachCollab({ editor, room, password, signaling, userlist, nameInput, onStatus }) {
   const ydoc = new Y.Doc();
   const ytext = ydoc.getText("monaco");
+  // Editor settings live in the shared document, so one person changing the
+  // language, theme or indent changes it for everyone, including whoever
+  // joins later (Yjs also restores them from IndexedDB before the peers meet).
+  const settings = ydoc.getMap("settings");
   const options = {};
   if (password) options.password = password;
   if (signaling && signaling.length) options.signaling = signaling;
@@ -70,6 +74,23 @@ export function attachCollab({ editor, room, password, signaling, userlist, name
   const binding = new MonacoBinding(ytext, editor.getModel(), new Set([editor]), provider.awareness);
 
   const currentUser = () => (provider.awareness.getLocalState() || {}).user || null;
+
+  const readSettings = () => {
+    const values = {};
+    settings.forEach((value, key) => { values[key] = value; });
+    return values;
+  };
+
+  const setSetting = (key, value) => {
+    if (value === undefined || value === null || value === "") return;
+    if (settings.get(key) === String(value)) return;
+    settings.set(key, String(value));
+  };
+
+  const onSettings = (callback) => {
+    settings.observe(() => callback(readSettings()));
+    callback(readSettings());
+  };
 
   const setName = (raw) => {
     const cleaned = String(raw == null ? "" : raw).trim().slice(0, NAME_LIMIT);
@@ -114,9 +135,13 @@ export function attachCollab({ editor, room, password, signaling, userlist, name
     provider,
     persistence,
     binding,
+    settings,
     status,
     setName,
     currentUser,
+    readSettings,
+    setSetting,
+    onSettings,
     stop: () => window.clearInterval(timer)
   };
 }

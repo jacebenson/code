@@ -30,6 +30,16 @@ class EditorFlowTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "/monaco-editor/vs/loader.js"
   end
 
+  # Language, theme and indent are room settings now, not per browser.
+  test "the page publishes settings changes and applies the shared ones" do
+    get "/room-one"
+
+    assert_response :success
+    assert_includes response.body, 'window.collab.setSetting(key, value)'
+    assert_includes response.body, "window.collab.onSettings(applySharedSettings)"
+    assert_includes response.body, 'publish("theme", value)'
+  end
+
   test "every theme the picker offers has a vendored definition" do
     get "/theme-room"
 
