@@ -71,7 +71,26 @@ select {
   font: 11px monospace;
 }
 
-#firepad { flex: 1; min-height: 0; }
+#editor { flex: 1; min-height: 240px; }
+
+.name-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.name-field input {
+  background: var(--paper2);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 3px 6px;
+  font: 11px monospace;
+  width: 150px;
+}
+
+.name-field input:focus { outline: 1px solid var(--accent); }
 
 #userlist {
   width: 160px;

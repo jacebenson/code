@@ -14,6 +14,9 @@
   <header>
     <span class="brand">code<span>.jace.pro</span></span>
     <span class="room" id="room">room <code><%= @room %></code></span>
+    <label class="name-field">Your name
+      <input id="display-name" maxlength="40" autocomplete="off" spellcheck="false" />
+    </label>
     <button type="button" id="copy-link">Copy link</button>
     <span class="status" id="status">connecting</span>
   </header>
@@ -125,6 +128,7 @@
             room: ROOM,
             signaling: [socket],
             userlist: document.getElementById("userlist"),
+            nameInput: document.getElementById("display-name"),
             onStatus: function (status) {
               window.__status = status;
               var peers = status.peers === 1 ? "1 person" : status.peers + " people";

@@ -22,6 +22,7 @@ class EditorFlowTest < ActionDispatch::IntegrationTest
     assert_select "body[data-room=?]", "room-one"
     assert_select "#editor"
     assert_select "#userlist"
+    assert_select "input#display-name"
     assert_select "select#lang"
     assert_select "script[src=?]", "/js/webmcp.js?v=2"
     assert_includes response.body, "/js/collab.bundle.js"
