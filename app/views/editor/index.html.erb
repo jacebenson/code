@@ -1,5 +1,9 @@
 <%# The edit page for one collaboration room. Layout is disabled: this page is a
     full application shell, not part of a site chrome. %>
+<%# public/ files are not digest stamped, so the deploy's commit identifies the
+    bundle and stylesheet. Without it browsers and the CDN keep serving the
+    previous deploy's copy until its long max-age expires. %>
+<% asset_version = (ENV["SOURCE_COMMIT"] || "dev")[0, 7] %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
   <title>code.jace.pro · room <%= @room %></title>
-  <link rel="stylesheet" href="/css/editor.css" />
+  <link rel="stylesheet" href="/css/editor.css?v=<%= asset_version %>" />
   <script src="/monaco-editor/vs/loader.js"></script>
 </head>
 <body data-room="<%= @room %>">
@@ -121,7 +125,7 @@
           value: ""
         });
 
-        import("/js/collab.bundle.js").then(function (mod) {
+        import("/js/collab.bundle.js?v=<%= asset_version %>").then(function (mod) {
           var socket = (location.protocol === "https:" ? "wss:" : "ws:") + "//" + location.host + "/signal";
           window.collab = mod.attachCollab({
             editor: window.editor,
@@ -142,6 +146,6 @@
 
     init();
   </script>
-  <script src="/js/webmcp.js?v=2" defer></script>
+  <script src="/js/webmcp.js?v=<%= asset_version %>" defer></script>
 </body>
 </html>
