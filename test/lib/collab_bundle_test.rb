@@ -23,5 +23,7 @@ class CollabBundleTest < ActiveSupport::TestCase
 
     assert_includes source, "attachCollab"
     assert_includes source, "setName"
+    assert_includes source, "setSetting"
+    assert_includes source, "onSettings"
   end
 end

@@ -66,10 +66,22 @@
   <script>
     var ROOM = document.body.dataset.room;
 
+    function applyLang(value) {
+      if (!value || !window.monaco || !window.editor) return;
+      monaco.editor.setModelLanguage(window.editor.getModel(), value);
+    }
+
+    // Editor settings are shared. A change goes into the document and comes
+    // back to every peer, the person who made it included, via applySharedSettings.
+    function publish(key, value) {
+      remember();
+      if (window.collab) window.collab.setSetting(key, value);
+    }
+
     function selectLang() {
       var value = document.getElementById("lang").value;
-      if (window.monaco && window.editor) window.monaco.editor.setModelLanguage(window.editor.getModel(), value);
-      remember();
+      applyLang(value);
+      publish("lang", value);
     }
 
     // Themes other than vs/vs-dark are JSON files vendored under
@@ -95,17 +107,44 @@
         });
     }
 
-    function selectTheme() {
-      remember();
-      loadTheme(document.getElementById("theme").value)
+    function applyTheme(name) {
+      return loadTheme(name)
         .then(function (id) { monaco.editor.setTheme(id); })
-        .catch(function () { /* unknown name in the list: keep the current theme */ });
+        .catch(function () { /* unknown name: keep the current theme */ });
+    }
+
+    function applyIndent(value) {
+      if (!value || !window.editor) return;
+      window.editor.getModel().updateOptions({ tabSize: parseInt(value, 10) });
+    }
+
+    function applySharedSettings(values) {
+      if (!values) return;
+
+      if (values.indent) {
+        document.getElementById("indentUnit").value = values.indent;
+        applyIndent(values.indent);
+      }
+      if (values.lang) {
+        document.getElementById("lang").value = values.lang;
+        applyLang(values.lang);
+      }
+      if (values.theme && values.theme !== document.getElementById("theme").value) {
+        document.getElementById("theme").value = values.theme;
+        applyTheme(values.theme);
+      }
+    }
+
+    function selectTheme() {
+      var value = document.getElementById("theme").value;
+      applyTheme(value);
+      publish("theme", value);
     }
 
     function selectIndentUnit() {
-      var value = parseInt(document.getElementById("indentUnit").value, 10);
-      if (window.editor) window.editor.getModel().updateOptions({ tabSize: value });
-      remember();
+      var value = document.getElementById("indentUnit").value;
+      applyIndent(value);
+      publish("indent", value);
     }
 
     function remember() {
@@ -170,6 +209,7 @@
             document.getElementById("status").textContent = peers + (status.connected ? " · connected" : " · offline");
           }
         });
+        window.collab.onSettings(applySharedSettings);
         window.__ready = true;
       });
     }
