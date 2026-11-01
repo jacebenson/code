@@ -1,65 +1,82 @@
----
+# code.jace.pro
 
-Example plain HTML site using GitLab Pages.
+A co-working code editor. Two or more people open the same room URL and edit the
+same document at the same time.
 
-Learn more about GitLab Pages at https://pages.gitlab.io and the official
-documentation https://docs.gitlab.com/ce/user/project/pages/.
+Rails serves the page and one WebSocket endpoint. The document itself never
+touches the server: browsers exchange edits directly over WebRTC, and each one
+keeps its own copy in IndexedDB. There is no database in this app, by design.
 
----
+## How it fits together
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+| Piece | Where | What it does |
+|---|---|---|
+| `app/lib/signal_relay.rb` | mounted at `/signal` | Introduces peers to each other. Stores nothing. |
+| `src/collab.js` | bundled to `public/js/collab.bundle.js` | Yjs document, WebRTC transport, Monaco binding |
+| `public/monaco-editor/` | vendored in the repo | The editor itself |
+| `public/js/webmcp.js` | served as-is | Read-only WebMCP tools for browser agents |
 
-- [GitLab CI](#gitlab-ci)
-- [GitLab User or Group Pages](#gitlab-user-or-group-pages)
-- [Did you fork this project?](#did-you-fork-this-project)
-- [Troubleshooting](#troubleshooting)
+Everything the browser loads is served from this app. There are no CDN
+dependencies and no hosted realtime service.
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+## Rooms
 
-## GitLab CI
+`/` redirects to a fresh room, `/new` does the same on request, and `/room-name`
+opens an existing room. Whoever has the URL can join and edit. Room names are
+not secrets, so treat a room URL like a shared document link.
 
-This project's static Pages are built by [GitLab CI][ci], following the steps
-defined in [`.gitlab-ci.yml`](.gitlab-ci.yml):
+Rooms exist only while someone has them open. A peer that reloads keeps its own
+copy through IndexedDB, but a room nobody has open has no content to serve.
 
-```
-image: alpine:latest
+## Local development
 
-pages:
-  stage: deploy
-  script:
-  - echo 'Nothing to do...'
-  artifacts:
-    paths:
-    - public
-  only:
-  - master
+```bash
+bundle install
+bin/rails server            # http://localhost:3000
 ```
 
-The above example expects to put all your HTML files in the `public/` directory.
+The collaboration bundle is committed, so no JavaScript toolchain is needed to
+run the app. Rebuild it only after changing `src/`:
 
-## GitLab User or Group Pages
+```bash
+npm install
+npm run build               # writes public/js/collab.bundle.js
+```
 
-To use this project as your user/group website, you will need one additional
-step: just rename your project to `namespace.gitlab.io`, where `namespace` is
-your `username` or `groupname`. This can be done by navigating to your
-project's **Settings**.
+## Tests
 
-Read more about [user/group Pages][userpages] and [project Pages][projpages].
+```bash
+bin/rails test
+```
 
-## Did you fork this project?
+`test/lib/signal_relay_test.rb` covers the relay protocol without a socket, and
+`test/integration/editor_flow_test.rb` covers the routes, the page, and the
+absence of the old hosted dependencies.
 
-If you forked this project for your own use, please go to your project's
-**Settings** and remove the forking relationship, which won't be necessary
-unless you want to contribute back to the upstream project.
+## Verifying collaboration by hand
 
-## Troubleshooting
+Two tabs of one browser profile are not a valid test: same-origin tabs sync
+through `BroadcastChannel`, so a broken transport still looks like it works. Use
+two profiles, two browsers, or two devices.
 
-1. CSS is missing! That means that you have wrongly set up the CSS URL in your
-   HTML files. Have a look at the [index.html] for an example.
+```js
+// in each peer's console
+window.collab.provider.awareness.getStates().size  // 2 when both are present
+window.collab.provider.room.webrtcConns.size       // 1 means a peer connection
+window.editor.getValue()
+```
 
-[ci]: https://about.gitlab.com/gitlab-ci/
-[index.html]: https://gitlab.com/pages/plain-html/blob/master/public/index.html
-[userpages]: https://docs.gitlab.com/ce/user/project/pages/introduction.html#user-or-group-pages
-[projpages]: https://docs.gitlab.com/ce/user/project/pages/introduction.html#project-pages
+## Deploy notes
+
+- Coolify build pack: Dockerfile, port 3000.
+- `SECRET_KEY_BASE` must be set (the app has no credentials file).
+- `/up` is the health endpoint.
+
+## Limits worth knowing
+
+- Every peer connects to every other peer, so this suits a handful of people in
+  one room, not a large audience.
+- A strict corporate network or symmetric NAT can block the direct connection.
+  That needs a TURN relay, which is not part of this app.
+- The relay holds topics in memory. Multiple app instances would each have their
+  own peer set, so run one instance.

@@ -1,0 +1,17 @@
+{
+  "name": "code-jace-pro-collab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Builds the Yjs/WebRTC bundle served by the code.jace.pro collaboration app. The built file is committed, so the Rails deploy needs no JavaScript toolchain.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "y-indexeddb": "^9.0.12",
+    "y-monaco": "^0.1.6",
+    "y-webrtc": "^10.3.0",
+    "yjs": "^13.6.33"
+  }
+}

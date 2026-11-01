@@ -1,0 +1,221 @@
+<%# The edit page for one collaboration room. Layout is disabled: this page is a
+    full application shell, not part of a site chrome. %>
+<%# public/ files are not digest stamped, so the deploy's commit identifies the
+    bundle and stylesheet. Without it browsers and the CDN keep serving the
+    previous deploy's copy until its long max-age expires. %>
+<% asset_version = (ENV["SOURCE_COMMIT"] || "dev")[0, 7] %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>code.jace.pro · room <%= @room %></title>
+  <link rel="stylesheet" href="/css/editor.css?v=<%= asset_version %>" />
+  <script src="/monaco-editor/vs/loader.js"></script>
+</head>
+<body data-room="<%= @room %>">
+  <header>
+    <span class="brand">code<span>.jace.pro</span></span>
+    <span class="room" id="room">room <code><%= @room %></code></span>
+    <label class="name-field">Your name
+      <input id="display-name" maxlength="40" autocomplete="off" spellcheck="false" />
+    </label>
+    <button type="button" id="copy-link">Copy link</button>
+    <span class="status" id="status">connecting</span>
+  </header>
+
+  <div id="container">
+    <aside id="userlist" aria-label="People in this room"></aside>
+    <main>
+      <div id="controls">
+        <label>Language
+          <select onchange="selectLang()" id="lang">
+            <% %w[abap apex azcli bat csharp cpp css dart dockerfile elixir fsharp go graphql
+                  handlebars hcl html ini java javascript julia kotlin less lua markdown mysql
+                  objective-c pascal perl php pgsql powershell pug python r ruby rust sass
+                  scala scheme scss shell solidity sql swift typescript vb xml yaml].each do |language| %>
+              <option value="<%= language %>" <%= "selected" if language == "javascript" %>><%= language %></option>
+            <% end %>
+          </select>
+        </label>
+
+        <label>Theme
+          <%# Built from the vendored definitions, so the picker cannot offer a
+              theme that has no file behind it. Names are the file basenames. %>
+          <% themes = ["vs", "vs-dark"] + Dir.children(Rails.root.join("public/monaco-editor/themes")).sort.map { |file| File.basename(file, ".json") } %>
+          <select onchange="selectTheme()" id="theme">
+            <% themes.each do |theme| %>
+              <option value="<%= theme %>" <%= "selected" if theme == "vs-dark" %>><%= theme %></option>
+            <% end %>
+          </select>
+        </label>
+
+        <label>Indent
+          <select onchange="selectIndentUnit()" id="indentUnit">
+            <% (1..8).each do |unit| %>
+              <option value="<%= unit %>" <%= "selected" if unit == 2 %>><%= unit %></option>
+            <% end %>
+          </select>
+        </label>
+      </div>
+      <div id="editor"></div>
+    </main>
+  </div>
+
+  <script>
+    var ROOM = document.body.dataset.room;
+
+    function applyLang(value) {
+      if (!value || !window.monaco || !window.editor) return;
+      monaco.editor.setModelLanguage(window.editor.getModel(), value);
+    }
+
+    // Editor settings are shared. A change goes into the document and comes
+    // back to every peer, the person who made it included, via applySharedSettings.
+    function publish(key, value) {
+      remember();
+      if (window.collab) window.collab.setSetting(key, value);
+    }
+
+    function selectLang() {
+      var value = document.getElementById("lang").value;
+      applyLang(value);
+      publish("lang", value);
+    }
+
+    // Themes other than vs/vs-dark are JSON files vendored under
+    // /monaco-editor/themes, named with spaces, parens and underscores removed.
+    // They have to be defined before setTheme or before creating the editor,
+    // otherwise Monaco keeps its default light theme.
+    function themeId(name) {
+      return String(name || "").replace(/[\s()_]/g, "");
+    }
+
+    function loadTheme(name) {
+      var id = themeId(name);
+      if (!id || id === "null") return Promise.resolve("vs-dark");
+      if (id === "vs" || id === "vs-dark") return Promise.resolve(id);
+      return fetch("/monaco-editor/themes/" + id + ".json")
+        .then(function (response) {
+          if (!response.ok) throw new Error("no theme " + id);
+          return response.json();
+        })
+        .then(function (data) {
+          monaco.editor.defineTheme(id, data);
+          return id;
+        });
+    }
+
+    function applyTheme(name) {
+      return loadTheme(name)
+        .then(function (id) { monaco.editor.setTheme(id); })
+        .catch(function () { /* unknown name: keep the current theme */ });
+    }
+
+    function applyIndent(value) {
+      if (!value || !window.editor) return;
+      window.editor.getModel().updateOptions({ tabSize: parseInt(value, 10) });
+    }
+
+    function applySharedSettings(values) {
+      if (!values) return;
+
+      if (values.indent) {
+        document.getElementById("indentUnit").value = values.indent;
+        applyIndent(values.indent);
+      }
+      if (values.lang) {
+        document.getElementById("lang").value = values.lang;
+        applyLang(values.lang);
+      }
+      if (values.theme && values.theme !== document.getElementById("theme").value) {
+        document.getElementById("theme").value = values.theme;
+        applyTheme(values.theme);
+      }
+    }
+
+    function selectTheme() {
+      var value = document.getElementById("theme").value;
+      applyTheme(value);
+      publish("theme", value);
+    }
+
+    function selectIndentUnit() {
+      var value = document.getElementById("indentUnit").value;
+      applyIndent(value);
+      publish("indent", value);
+    }
+
+    function remember() {
+      try {
+        localStorage.setItem("code.jace.pro:prefs", JSON.stringify({
+          lang: document.getElementById("lang").value,
+          theme: document.getElementById("theme").value,
+          indent: document.getElementById("indentUnit").value
+        }));
+      } catch (_) {}
+    }
+
+    function restore() {
+      try {
+        var prefs = JSON.parse(localStorage.getItem("code.jace.pro:prefs") || "{}");
+        if (prefs.lang) document.getElementById("lang").value = prefs.lang;
+        if (prefs.theme) document.getElementById("theme").value = prefs.theme;
+        if (prefs.indent) document.getElementById("indentUnit").value = prefs.indent;
+      } catch (_) {}
+    }
+
+    document.getElementById("copy-link").addEventListener("click", function () {
+      navigator.clipboard.writeText(location.href).then(function () {
+        var button = document.getElementById("copy-link");
+        button.textContent = "Copied";
+        setTimeout(function () { button.textContent = "Copy link"; }, 1500);
+      });
+    });
+
+    function init() {
+      restore();
+      require.config({ paths: { vs: "/monaco-editor/vs" } });
+      require(["vs/editor/editor.main"], function () {
+        // The theme has to exist before the editor is created, or the editor
+        // opens in the default light theme and the chosen one never applies.
+        loadTheme(document.getElementById("theme").value)
+          .then(function (theme) { start(theme); })
+          .catch(function () { start("vs-dark"); });
+      });
+    }
+
+    function start(theme) {
+      window.editor = monaco.editor.create(document.getElementById("editor"), {
+        language: document.getElementById("lang").value,
+        theme: theme,
+        tabSize: parseInt(document.getElementById("indentUnit").value, 10),
+        automaticLayout: true,
+        value: ""
+      });
+
+      import("/js/collab.bundle.js?v=<%= asset_version %>").then(function (mod) {
+        var socket = (location.protocol === "https:" ? "wss:" : "ws:") + "//" + location.host + "/signal";
+        window.collab = mod.attachCollab({
+          editor: window.editor,
+          room: ROOM,
+          signaling: [socket],
+          userlist: document.getElementById("userlist"),
+          nameInput: document.getElementById("display-name"),
+          onStatus: function (status) {
+            window.__status = status;
+            var peers = status.peers === 1 ? "1 person" : status.peers + " people";
+            document.getElementById("status").textContent = peers + (status.connected ? " · connected" : " · offline");
+          }
+        });
+        window.collab.onSettings(applySharedSettings);
+        window.__ready = true;
+      });
+    }
+
+    init();
+  </script>
+  <script src="/js/webmcp.js?v=<%= asset_version %>" defer></script>
+</body>
+</html>
